@@ -417,7 +417,12 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnCopyToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code 
+            // Check length
+            if (this.urlListtextBox.TextLength > 0)
+            {
+                // Copy to clipboard
+                Clipboard.SetText(this.urlListtextBox.Text);
+            }
         }
 
         /// <summary>
