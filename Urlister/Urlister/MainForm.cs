@@ -1,13 +1,18 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
+﻿// <copyright file="MainForm.cs" company="PUblicDomain.com">
+//     CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication
+//     https://creativecommons.org/publicdomain/zero/1.0/legalcode
+// </copyright>
 
 namespace Urlister
 {
+    // Directives
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Reflection;
+    using System.Windows.Forms;
+
     /// <summary>
     /// Description of MainForm.
     /// </summary>
@@ -19,6 +24,9 @@ namespace Urlister
         /// <value>The associated icon.</value>
         private Icon associatedIcon;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Urlister.MainForm"/> class.
+        /// </summary>
         public MainForm()
         {
             // The InitializeComponent() call is required for Windows Forms designer support.
@@ -36,7 +44,12 @@ namespace Urlister
             this.browserComboBox.SelectedItem = "Default";
         }
 
-        void NewToolStripMenuItemClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the new tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnNewToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Clear text box
             this.urlListtextBox.Clear();
@@ -45,7 +58,12 @@ namespace Urlister
             this.intervalNumericUpDown.Value = 1;
         }
 
-        void ExitToolStripMenuItem1Click(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the exit tool strip menu item1 click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnExitToolStripMenuItem1Click(object sender, EventArgs e)
         {
             // Close program
             this.Close();
@@ -56,7 +74,7 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void MoreReleasesPublicDomainGiftomToolStripMenuItemClick(object sender, EventArgs e)
+        private void OnMoreReleasesPublicDomainGiftomToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open current website
             Process.Start("https://publicdomaingift.com");
@@ -67,7 +85,7 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OriginalThreadDonationCodercomToolStripMenuItemClick(object sender, EventArgs e)
+        private void OnOriginalThreadDonationCodercomToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open original thread @ DonationCoder
             Process.Start("https://www.donationcoder.com/forum/index.php?topic=34285");
@@ -78,7 +96,7 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void SourceCodeGithubcomToolStripMenuItemClick(object sender, EventArgs e)
+        private void OnSourceCodeGithubcomToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open GitHub repository
             Process.Start("https://github.com/publicdomain/urlister");
@@ -89,7 +107,7 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void AboutToolStripMenuItemClick(object sender, EventArgs e)
+        private void OnAboutToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Set license text
             var licenseText = $"CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication{Environment.NewLine}" +
@@ -125,16 +143,23 @@ namespace Urlister
                 $"{programTitle} {version.Major}.{version.Minor}.{version.Build}",
                 $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #1, Week #1 @ Janury 01, 2021",
                 licenseText,
-                this.Icon.ToBitmap());
+                this.Icon.ToBitmap())
+            {
 
-            // Set about form icon
-            aboutForm.Icon = this.associatedIcon;
+                // Set about form icon
+                Icon = this.associatedIcon
+            };
 
             // Show about form
             aboutForm.ShowDialog();
         }
 
-        void BeginButtonClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the begin button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnBeginButtonClick(object sender, EventArgs e)
         {
             // First line number
             this.intervalNumericUpDown.Value = 1;
@@ -143,7 +168,12 @@ namespace Urlister
             this.playButton.PerformClick();
         }
 
-        void BackButtonClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the back button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnBackButtonClick(object sender, EventArgs e)
         {
             // Take one from line number
             if (this.intervalNumericUpDown.Value > 0)
@@ -155,7 +185,12 @@ namespace Urlister
             }
         }
 
-        void PlayButtonClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the play button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnPlayButtonClick(object sender, EventArgs e)
         {
             // Bounds
             if (this.intervalNumericUpDown.Value > this.urlListtextBox.Lines.Length)
@@ -173,7 +208,12 @@ namespace Urlister
             OpenUrl(urlLine);
         }
 
-        void NextButtonClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the next button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnNextButtonClick(object sender, EventArgs e)
         {
             // Must ve within range
             if (this.intervalNumericUpDown.Value < this.urlListtextBox.Lines.Length)
@@ -186,7 +226,12 @@ namespace Urlister
             }
         }
 
-        void EndButtonClick(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the end button click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnEndButtonClick(object sender, EventArgs e)
         {
             // Last line number
             this.intervalNumericUpDown.Value = this.urlListtextBox.Lines.Length;
@@ -195,13 +240,22 @@ namespace Urlister
             this.playButton.PerformClick();
         }
 
-        void UrlListtextBoxTextChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Handles the URL listtext box text changed event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnUrlListtextBoxTextChanged(object sender, EventArgs e)
         {
             // Update line count
             this.lineCounToolStripStatusLabel.Text = this.urlListtextBox.Lines.Length.ToString();
         }
 
-        void OpenUrl(string url)
+        /// <summary>
+        /// Opens the URL.
+        /// </summary>
+        /// <param name="url">URL.</param>
+        private void OpenUrl(string url)
         {
             // BSet bowser
             string browser = this.browserComboBox.SelectedItem.ToString();
@@ -264,7 +318,11 @@ namespace Urlister
             }
         }
 
-        void SelectLine(int lineNumber)
+        /// <summary>
+        /// Selects the line.
+        /// </summary>
+        /// <param name="lineNumber">Line number.</param>
+        private void SelectLine(int lineNumber)
         {
             // Select line by number
             string SelectedText = this.urlListtextBox.Lines[lineNumber];
@@ -273,6 +331,31 @@ namespace Urlister
             this.urlListtextBox.Focus();
             this.urlListtextBox.Select(SelectedTextPos, SelectedTextLen);
             this.urlListtextBox.ScrollToCaret();
+        }
+
+        /// <summary>
+        /// Handles the interval numeric up down key press event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnIntervalNumericUpDownKeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Check for enter
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                // Hit play button
+                this.playButton.PerformClick();
+            }
+        }
+
+        /// <summary>
+        /// Handles the options tool strip menu item drop down item clicked event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnOptionsToolStripMenuItemDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            // TODO Add code
         }
     }
 }
