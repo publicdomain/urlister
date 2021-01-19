@@ -361,5 +361,93 @@ namespace Urlister
             // Toggle checked
             toolStripMenuItem.Checked = !toolStripMenuItem.Checked;
         }
+
+        /// <summary>
+        /// Handles the main form form closing event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnMainFormFormClosing(object sender, FormClosingEventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the open tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnOpenToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the save tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnSaveToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the cut tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnCutToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // Check length
+            if (this.urlListtextBox.TextLength > 0)
+            {
+                // Copy to clipboard
+                Clipboard.SetText(this.urlListtextBox.Text);
+
+                // Clear text box
+                this.urlListtextBox.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Handles the copy tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnCopyToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code 
+        }
+
+        /// <summary>
+        /// Handles the paste tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnPasteToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
+
+        /// <summary>
+        /// Handles the delete tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnDeleteToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code 
+        }
+
+        /// <summary>
+        /// Handles the select all tool strip menu item click event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnSelectAllToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            // TODO Add code
+        }
     }
 }
