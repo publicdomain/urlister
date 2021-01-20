@@ -432,7 +432,8 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnPasteToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Append clipboard text
+            this.urlListtextBox.Text += Clipboard.GetText();
         }
 
         /// <summary>
