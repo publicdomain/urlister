@@ -25,6 +25,11 @@ namespace Urlister
         private Icon associatedIcon;
 
         /// <summary>
+        /// The process.
+        /// </summary>
+        private Process process = null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:Urlister.MainForm"/> class.
         /// </summary>
         public MainForm()
@@ -263,6 +268,23 @@ namespace Urlister
             // Set url by line
             string urlLine = this.urlListtextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
 
+            // TODO Check if must kill process 
+            if (this.closeBrowserToolStripMenuItem.Checked && this.process != null)
+            {
+                // Close process main window
+                this.process.CloseMainWindow();
+            }
+
+            // Check for no process
+            if (this.process == null)
+            {
+                // Set new process 
+                this.process = new Process();
+
+                // Configure it
+                this.process.StartInfo.UseShellExecute = true;
+            }
+
             // Error handling
             try
             {
@@ -271,45 +293,24 @@ namespace Urlister
                 {
                     // Default
                     case "Default":
-                        Process.Start(urlLine);
+                        this.process.StartInfo.FileName = $"{urlLine}";
                         break;
 
                     // Launch Edge
                     case "Edge":
-                        Process.Start($"microsoft-edge:{urlLine}");
+                        this.process.StartInfo.FileName = $"microsoft-edge:{urlLine}";
                         break;
 
-                    // Everything  else
+                    // TODO Other specific browsers
                     default:
 
-                        // Core  Prpcess.Start(browser, urlLine);
-                        Process process = new Process();
-                        process.StartInfo.UseShellExecute = true;
-                        process.StartInfo.FileName = $"{browser}.exe";
-                        process.StartInfo.Arguments = urlLine;
-                        process.Start();
+                        this.process.StartInfo.FileName = $"{browser}.exe";
+                        this.process.StartInfo.Arguments = urlLine;
                         break;
                 }
 
-                // Act on Edge
-                if (browser != "edge")
-                {
-                    if (browser == "Default")
-                    {
-                        // Default
-                        Process.Start(urlLine);
-                    }
-                    else
-                    {
-                        // Launch browser
-                        Process.Start(browser, urlLine);
-                    }
-                }
-                else
-                {
-                    // Launch Edge
-                    Process.Start($"microsoft-edge:{urlLine}");
-                }
+                // Start = launch browser
+                this.process.Start();
             }
             catch (Exception ex)
             {
@@ -453,7 +454,8 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnSelectAllToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Select text box
+            this.urlListtextBox.SelectAll();
         }
     }
 }
