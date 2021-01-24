@@ -413,6 +413,33 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnSaveToolStripMenuItemClick(object sender, EventArgs e)
         {
+            // Open save file dialog
+            if (this.saveFileDialog.ShowDialog() == DialogResult.OK && this.saveFileDialog.FileName.Length > 0)
+            {
+                try
+                {
+                    // Update settings by GUI values
+                    this.UpdateSettingsByGui();
+
+                    // Save URL list to file
+                    File.WriteAllText(this.saveFileDialog.FileName, this.urlListtextBox.Text);
+                }
+                catch (Exception exception)
+                {
+                    // Inform user
+                    MessageBox.Show($"Error when saving to \"{Path.GetFileName(this.saveFileDialog.FileName)}\":{Environment.NewLine}{exception.Message}", "Save file error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                // Inform user
+                MessageBox.Show($"Saved file to \"{Path.GetFileName(this.saveFileDialog.FileName)}\"", "Settings file saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        /// <summary>
+        /// Updates the settings by GUI.
+        /// </summary>
+        private void UpdateSettingsByGui()
+        {
             // TODO Add code
         }
 
@@ -421,6 +448,7 @@ namespace Urlister
         /// </summary>
         private void SetGuiByLoadedSettings()
         {
+            // TODO Add code
         }
 
         /// <summary>
