@@ -510,6 +510,7 @@ namespace Urlister
         	this.mainTableLayoutPanel.SetColumnSpan(this.urlListtextBox, 2);
         	this.urlListtextBox.Dock = System.Windows.Forms.DockStyle.Fill;
         	this.urlListtextBox.Location = new System.Drawing.Point(3, 58);
+        	this.urlListtextBox.MaxLength = 0;
         	this.urlListtextBox.Multiline = true;
         	this.urlListtextBox.Name = "urlListtextBox";
         	this.urlListtextBox.Size = new System.Drawing.Size(278, 205);

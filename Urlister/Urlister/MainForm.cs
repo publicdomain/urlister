@@ -10,6 +10,7 @@ namespace Urlister
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Drawing;
+    using System.IO;
     using System.Reflection;
     using System.Windows.Forms;
 
@@ -380,7 +381,29 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnOpenToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Show open file dialog
+            if (this.openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    // Load from disk
+                    this.urlListtextBox.Text = File.ReadAllText(this.openFileDialog.FileName);
+
+                    // Set GUI
+                    this.SetGuiByLoadedSettings();
+
+                    // Reset to line #1
+                    this.intervalNumericUpDown.ResetText();
+
+                    // Select first line
+                    this.SelectLine(0);
+                }
+                catch (Exception exception)
+                {
+                    // Inform user
+                    MessageBox.Show($"Error when opening \"{Path.GetFileName(this.openFileDialog.FileName)}\":{Environment.NewLine}{exception.Message}", "Open file error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         /// <summary>
@@ -391,6 +414,13 @@ namespace Urlister
         private void OnSaveToolStripMenuItemClick(object sender, EventArgs e)
         {
             // TODO Add code
+        }
+
+        /// <summary>
+        /// Sets the GUI by loaded settings.
+        /// </summary>
+        private void SetGuiByLoadedSettings()
+        {
         }
 
         /// <summary>
