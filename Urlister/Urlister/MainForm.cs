@@ -502,7 +502,8 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnDeleteToolStripMenuItemClick(object sender, EventArgs e)
         {
-            // TODO Add code 
+            // Clear text box
+            this.urlListtextBox.Clear();
         }
 
         /// <summary>
