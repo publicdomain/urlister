@@ -57,7 +57,6 @@ namespace Urlister
         	this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.closeBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        	this.saveSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.moreReleasesPublicDomainGiftcomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.originalThreadDonationCodercomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -243,8 +242,7 @@ namespace Urlister
         	// 
         	this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
         	        	        	this.alwaysOnTopToolStripMenuItem,
-        	        	        	this.closeBrowserToolStripMenuItem,
-        	        	        	this.saveSettingsToolStripMenuItem});
+        	        	        	this.closeBrowserToolStripMenuItem});
         	this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
         	this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
         	this.optionsToolStripMenuItem.Text = "&Options";
@@ -253,22 +251,14 @@ namespace Urlister
         	// alwaysOnTopToolStripMenuItem
         	// 
         	this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
-        	this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+        	this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
         	this.alwaysOnTopToolStripMenuItem.Text = "&Always on top";
         	// 
         	// closeBrowserToolStripMenuItem
         	// 
         	this.closeBrowserToolStripMenuItem.Name = "closeBrowserToolStripMenuItem";
-        	this.closeBrowserToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+        	this.closeBrowserToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
         	this.closeBrowserToolStripMenuItem.Text = "&Close browser";
-        	// 
-        	// saveSettingsToolStripMenuItem
-        	// 
-        	this.saveSettingsToolStripMenuItem.Checked = true;
-        	this.saveSettingsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-        	this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
-        	this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-        	this.saveSettingsToolStripMenuItem.Text = "&Save settings";
         	// 
         	// helpToolStripMenuItem
         	// 
@@ -557,7 +547,6 @@ namespace Urlister
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeBrowserToolStripMenuItem;
         private System.Windows.Forms.TextBox urlListtextBox;
         private System.Windows.Forms.Label label1;

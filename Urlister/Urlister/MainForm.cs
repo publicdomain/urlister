@@ -13,6 +13,7 @@ namespace Urlister
     using System.IO;
     using System.Reflection;
     using System.Windows.Forms;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// Description of MainForm.
@@ -31,6 +32,16 @@ namespace Urlister
         private Process process = null;
 
         /// <summary>
+        /// The urlister settings.
+        /// </summary>
+        private UrlisterSettings urlisterSettings = new UrlisterSettings();
+
+        /// <summary>
+        /// The urlister settings file path.
+        /// </summary>
+        private string urlisterSettingsFilePath = "UrlisterSettings.txt";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:Urlister.MainForm"/> class.
         /// </summary>
         public MainForm()
@@ -46,8 +57,20 @@ namespace Urlister
             // Set public domain weekly tool strip menu item image
             this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
 
-            // Select default browser in combo box
-            this.browserComboBox.SelectedItem = "Default";
+            /* TODO Load settings [SaveSettings handling can be improved]*/
+
+            // Check for settings file
+            if (!File.Exists(this.urlisterSettingsFilePath))
+            {
+                // Create new settings file
+                this.SaveSettingsFile(this.urlisterSettingsFilePath);
+            }
+
+            // Load settings from disk
+            this.urlisterSettings = this.LoadSettingsFile(this.urlisterSettingsFilePath);
+
+            // Set GUI
+            this.SetGuiByLoadedSettings();
         }
 
         /// <summary>
@@ -263,7 +286,7 @@ namespace Urlister
         /// <param name="url">URL.</param>
         private void OpenUrl(string url)
         {
-            // BSet bowser
+            // Set browser
             string browser = this.browserComboBox.SelectedItem.ToString();
 
             // Set url by line
@@ -371,7 +394,11 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnMainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            // TODO Add code
+            // Update settings by current GUI
+            this.UpdateSettingsByGui();
+
+            // Save to disk
+            this.SaveSettingsFile(this.urlisterSettingsFilePath);
         }
 
         /// <summary>
@@ -440,7 +467,23 @@ namespace Urlister
         /// </summary>
         private void UpdateSettingsByGui()
         {
-            // TODO Add code
+            // Always on top
+            this.urlisterSettings.AlwaysOnTop = this.alwaysOnTopToolStripMenuItem.Checked;
+
+            // Close browser
+            this.urlisterSettings.CloseBrowser = this.closeBrowserToolStripMenuItem.Checked;
+
+            // Browser
+            if (this.browserComboBox.Text.Length > 0)
+            {
+                this.urlisterSettings.Browser = this.browserComboBox.SelectedItem.ToString();
+            }
+
+            // Line
+            this.urlisterSettings.Line = (int)this.intervalNumericUpDown.Value;
+
+            // URLs
+            this.urlisterSettings.Urls = this.urlListtextBox.Text;
         }
 
         /// <summary>
@@ -448,7 +491,20 @@ namespace Urlister
         /// </summary>
         private void SetGuiByLoadedSettings()
         {
-            // TODO Add code
+            // Always on top
+            this.alwaysOnTopToolStripMenuItem.Checked = this.urlisterSettings.AlwaysOnTop;
+
+            // Close browser
+            this.closeBrowserToolStripMenuItem.Checked = this.urlisterSettings.CloseBrowser;
+
+            // Browser
+            this.browserComboBox.SelectedItem = this.urlisterSettings.Browser;
+
+            // Line
+            this.intervalNumericUpDown.Value = this.urlisterSettings.Line;
+
+            // URLs
+            this.urlListtextBox.Text = this.urlisterSettings.Urls;
         }
 
         /// <summary>
@@ -515,6 +571,49 @@ namespace Urlister
         {
             // Select text box
             this.urlListtextBox.SelectAll();
+        }
+
+        /// <summary>
+        /// Loads the settings file.
+        /// </summary>
+        /// <returns>The settings file.</returns>
+        /// <param name="settingsFilePath">Settings file path.</param>
+        private UrlisterSettings LoadSettingsFile(string settingsFilePath)
+        {
+            // Use file stream
+            using (FileStream fileStream = File.OpenRead(settingsFilePath))
+            {
+                // Set xml serialzer
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(UrlisterSettings));
+
+                // Return populated settings data
+                return xmlSerializer.Deserialize(fileStream) as UrlisterSettings;
+            }
+        }
+
+        /// <summary>
+        /// Saves the settings file.
+        /// </summary>
+        /// <param name="settingsFilePath">Settings file path.</param>
+        private void SaveSettingsFile(string settingsFilePath)
+        {
+            try
+            {
+                // Use stream writer
+                using (StreamWriter streamWriter = new StreamWriter(settingsFilePath, false))
+                {
+                    // Set xml serialzer
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(UrlisterSettings));
+
+                    // Serialize settings data
+                    xmlSerializer.Serialize(streamWriter, this.urlisterSettings);
+                }
+            }
+            catch (Exception exception)
+            {
+                // Advise user
+                MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
