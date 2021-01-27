@@ -71,6 +71,9 @@ namespace Urlister
 
             // Set GUI
             this.SetGuiByLoadedSettings();
+
+            // Set top most
+            this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
         }
 
         /// <summary>
@@ -385,6 +388,9 @@ namespace Urlister
 
             // Toggle checked
             toolStripMenuItem.Checked = !toolStripMenuItem.Checked;
+
+            // Set topmost by check box
+            this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
         }
 
         /// <summary>
