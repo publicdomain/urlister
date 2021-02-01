@@ -2,6 +2,8 @@
 //     CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication
 //     https://creativecommons.org/publicdomain/zero/1.0/legalcode
 // </copyright>
+using System.Threading;
+using System.Globalization;
 
 namespace Urlister
 {
@@ -14,6 +16,7 @@ namespace Urlister
     using System.Reflection;
     using System.Windows.Forms;
     using System.Xml.Serialization;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Description of MainForm.
@@ -24,12 +27,22 @@ namespace Urlister
         /// Gets or sets the associated icon.
         /// </summary>
         /// <value>The associated icon.</value>
-        private Icon associatedIcon;
+        private Icon associatedIcon = null;
 
         /// <summary>
         /// The process.
         /// </summary>
-        private Process process = null;
+        private Process process = new Process();
+
+        /// <summary>
+        /// The name of the process.
+        /// </summary>
+        private string processName = string.Empty;
+
+        /// <summary>
+        /// The default browser path.
+        /// </summary>
+        private string defaultBrowserPath = string.Empty;
 
         /// <summary>
         /// The urlister settings.
@@ -55,7 +68,22 @@ namespace Urlister
             this.associatedIcon = Icon.ExtractAssociatedIcon(typeof(MainForm).GetTypeInfo().Assembly.Location);
 
             // Set public domain weekly tool strip menu item image
-            this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
+            this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
+
+            /* Configure */
+
+            // Set default browser path
+            this.defaultBrowserPath = this.GetDefaultBrowserPath();
+
+            // Check if set
+            if (string.IsNullOrEmpty(this.defaultBrowserPath))
+            {
+                // Advise user
+                MessageBox.Show("No default browser path found!");
+
+                // Remove default browser path from combo box
+                this.browserComboBox.Items.RemoveAt(0);
+            }
 
             /* TODO Load settings [SaveSettings handling can be improved]*/
 
@@ -109,7 +137,7 @@ namespace Urlister
         private void OnMoreReleasesPublicDomainGiftomToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open current website
-            Process.Start("https://publicdomaingift.com");
+            Process.Start("https://publicdomaindaily.com");
         }
 
         /// <summary>
@@ -296,20 +324,22 @@ namespace Urlister
             string urlLine = this.urlListtextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
 
             // TODO Check if must kill process 
-            if (this.closeBrowserToolStripMenuItem.Checked && this.process != null)
+            if (this.closeBrowserToolStripMenuItem.Checked && !string.IsNullOrEmpty(this.processName))
             {
-                // Close process main window
-                this.process.CloseMainWindow();
-            }
-
-            // Check for no process
-            if (this.process == null)
-            {
-                // Set new process 
-                this.process = new Process();
-
-                // Configure it
-                this.process.StartInfo.UseShellExecute = true;
+                try
+                {
+                    // TODO Iterate all [Can be more specific]
+                    foreach (var browserProcess in Process.GetProcessesByName(this.processName))
+                    {
+                        // Close gracefully
+                        browserProcess.CloseMainWindow();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Advise user
+                    MessageBox.Show($"Error when cloding browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser closing error");
+                }
             }
 
             // Error handling
@@ -320,7 +350,8 @@ namespace Urlister
                 {
                     // Default
                     case "Default":
-                        this.process.StartInfo.FileName = $"{urlLine}";
+                        this.process.StartInfo.FileName = this.defaultBrowserPath;
+                        this.process.StartInfo.Arguments = urlLine;
                         break;
 
                     // Launch Edge
@@ -328,22 +359,83 @@ namespace Urlister
                         this.process.StartInfo.FileName = $"microsoft-edge:{urlLine}";
                         break;
 
-                    // TODO Other specific browsers
+                    // TODO Other specific browsers matching name
                     default:
-
-                        this.process.StartInfo.FileName = $"{browser}.exe";
+                        this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
                         this.process.StartInfo.Arguments = urlLine;
                         break;
                 }
 
-                // Start = launch browser
+                // Start process
                 this.process.Start();
+
+                // Set process name
+                this.processName = process.ProcessName;
+
             }
             catch (Exception ex)
             {
                 // Advise user
                 MessageBox.Show($"Error when launching browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser error");
             }
+        }
+
+        /// <summary>
+        /// Gets the default browser path.
+        /// </summary>
+        /// <returns>The default browser path.</returns>
+        private string GetDefaultBrowserPath()
+        {
+            // Declare default browser path variable
+            string defaultBrowserPathCleaned = string.Empty;
+
+            try
+            {
+                // Declare registry key
+                RegistryKey registryKey = null;
+
+                // Set registry key
+                for (int i = 0; i < 3; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            registryKey = Registry.ClassesRoot.OpenSubKey(@"HTTP\shell\open\command", false);
+                            break;
+                        case 1:
+                            registryKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http", false);
+                            break;
+                        case 2:
+                            registryKey = Registry.ClassesRoot.OpenSubKey(Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice", false).GetValue("ProgId") + @"\shell\open\command", false);
+                            break;
+                    }
+
+                    if (registryKey != null)
+                    {
+                        // Exit for
+                        break;
+                    }
+                }
+
+                // Check there's something to work with
+                if (registryKey != null)
+                {
+                    // Set default browser path withi no quotes and no parameters
+                    defaultBrowserPathCleaned = registryKey.GetValue(null).ToString().Replace("\"", "").Split(new string[] { "exe" }, 21, StringSplitOptions.RemoveEmptyEntries)[0] + "exe";
+
+                    //Close registry key
+                    registryKey.Close();
+                }
+
+            }
+            catch
+            {
+                // On error, empty string
+                return string.Empty;
+            }
+
+            //Return default browsers path
+            return defaultBrowserPathCleaned;
         }
 
         /// <summary>

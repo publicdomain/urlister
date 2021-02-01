@@ -57,8 +57,9 @@ namespace Urlister
         	this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.alwaysOnTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.closeBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        	this.reuseProcessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.originalThreadDonationCodercomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.sourceCodeGithubcomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -242,7 +243,8 @@ namespace Urlister
         	// 
         	this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
         	        	        	this.alwaysOnTopToolStripMenuItem,
-        	        	        	this.closeBrowserToolStripMenuItem});
+        	        	        	this.closeBrowserToolStripMenuItem,
+        	        	        	this.reuseProcessToolStripMenuItem});
         	this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
         	this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
         	this.optionsToolStripMenuItem.Text = "&Options";
@@ -251,19 +253,28 @@ namespace Urlister
         	// alwaysOnTopToolStripMenuItem
         	// 
         	this.alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
-        	this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        	this.alwaysOnTopToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
         	this.alwaysOnTopToolStripMenuItem.Text = "&Always on top";
         	// 
         	// closeBrowserToolStripMenuItem
         	// 
         	this.closeBrowserToolStripMenuItem.Name = "closeBrowserToolStripMenuItem";
-        	this.closeBrowserToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+        	this.closeBrowserToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
         	this.closeBrowserToolStripMenuItem.Text = "&Close browser";
+        	// 
+        	// reuseProcessToolStripMenuItem
+        	// 
+        	this.reuseProcessToolStripMenuItem.Checked = true;
+        	this.reuseProcessToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+        	this.reuseProcessToolStripMenuItem.Name = "reuseProcessToolStripMenuItem";
+        	this.reuseProcessToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+        	this.reuseProcessToolStripMenuItem.Text = "&Reuse process";
+        	this.reuseProcessToolStripMenuItem.Visible = false;
         	// 
         	// helpToolStripMenuItem
         	// 
         	this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-        	        	        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem,
+        	        	        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem,
         	        	        	this.originalThreadDonationCodercomToolStripMenuItem,
         	        	        	this.sourceCodeGithubcomToolStripMenuItem,
         	        	        	this.toolStripSeparator2,
@@ -272,18 +283,18 @@ namespace Urlister
         	this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
         	this.helpToolStripMenuItem.Text = "&Help";
         	// 
-        	// moreReleasesPublicDomainGiftcomToolStripMenuItem
+        	// dailyReleasesPublicDomainDailycomToolStripMenuItem
         	// 
-        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Name = "moreReleasesPublicDomainGiftcomToolStripMenuItem";
-        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Size = new System.Drawing.Size(284, 22);
-        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Text = "More releases @ PublicDomainGift.com";
-        	this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Click += new System.EventHandler(this.OnMoreReleasesPublicDomainGiftomToolStripMenuItemClick);
+        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Name = "dailyReleasesPublicDomainDailycomToolStripMenuItem";
+        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Size = new System.Drawing.Size(289, 22);
+        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Text = "&Daily releases @ PublicDomainDaily.com";
+        	this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Click += new System.EventHandler(this.OnMoreReleasesPublicDomainGiftomToolStripMenuItemClick);
         	// 
         	// originalThreadDonationCodercomToolStripMenuItem
         	// 
         	this.originalThreadDonationCodercomToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("originalThreadDonationCodercomToolStripMenuItem.Image")));
         	this.originalThreadDonationCodercomToolStripMenuItem.Name = "originalThreadDonationCodercomToolStripMenuItem";
-        	this.originalThreadDonationCodercomToolStripMenuItem.Size = new System.Drawing.Size(284, 22);
+        	this.originalThreadDonationCodercomToolStripMenuItem.Size = new System.Drawing.Size(289, 22);
         	this.originalThreadDonationCodercomToolStripMenuItem.Text = "&Original thread @ DonationCoder.com";
         	this.originalThreadDonationCodercomToolStripMenuItem.Click += new System.EventHandler(this.OnOriginalThreadDonationCodercomToolStripMenuItemClick);
         	// 
@@ -291,19 +302,19 @@ namespace Urlister
         	// 
         	this.sourceCodeGithubcomToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("sourceCodeGithubcomToolStripMenuItem.Image")));
         	this.sourceCodeGithubcomToolStripMenuItem.Name = "sourceCodeGithubcomToolStripMenuItem";
-        	this.sourceCodeGithubcomToolStripMenuItem.Size = new System.Drawing.Size(284, 22);
+        	this.sourceCodeGithubcomToolStripMenuItem.Size = new System.Drawing.Size(289, 22);
         	this.sourceCodeGithubcomToolStripMenuItem.Text = "Source code @ Github.com";
         	this.sourceCodeGithubcomToolStripMenuItem.Click += new System.EventHandler(this.OnSourceCodeGithubcomToolStripMenuItemClick);
         	// 
         	// toolStripSeparator2
         	// 
         	this.toolStripSeparator2.Name = "toolStripSeparator2";
-        	this.toolStripSeparator2.Size = new System.Drawing.Size(281, 6);
+        	this.toolStripSeparator2.Size = new System.Drawing.Size(286, 6);
         	// 
         	// aboutToolStripMenuItem
         	// 
         	this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-        	this.aboutToolStripMenuItem.Size = new System.Drawing.Size(284, 22);
+        	this.aboutToolStripMenuItem.Size = new System.Drawing.Size(289, 22);
         	this.aboutToolStripMenuItem.Text = "&About...";
         	this.aboutToolStripMenuItem.Click += new System.EventHandler(this.OnAboutToolStripMenuItemClick);
         	// 
@@ -374,8 +385,7 @@ namespace Urlister
         	this.browserComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         	this.browserComboBox.FormattingEnabled = true;
         	this.browserComboBox.Items.AddRange(new object[] {
-        	        	        	"Default",
-        	        	        	"Edge"});
+        	        	        	"Default"});
         	this.browserComboBox.Location = new System.Drawing.Point(3, 28);
         	this.browserComboBox.Name = "browserComboBox";
         	this.browserComboBox.Size = new System.Drawing.Size(136, 21);
@@ -473,6 +483,11 @@ namespace Urlister
         	        	        	0,
         	        	        	0,
         	        	        	0});
+        	this.intervalNumericUpDown.Minimum = new decimal(new int[] {
+        	        	        	1,
+        	        	        	0,
+        	        	        	0,
+        	        	        	0});
         	this.intervalNumericUpDown.Name = "intervalNumericUpDown";
         	this.intervalNumericUpDown.Size = new System.Drawing.Size(136, 20);
         	this.intervalNumericUpDown.TabIndex = 9;
@@ -544,6 +559,7 @@ namespace Urlister
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.ToolStripMenuItem reuseProcessToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
@@ -567,7 +583,7 @@ namespace Urlister
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem sourceCodeGithubcomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalThreadDonationCodercomToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem moreReleasesPublicDomainGiftcomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dailyReleasesPublicDomainDailycomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
