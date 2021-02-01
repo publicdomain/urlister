@@ -581,7 +581,7 @@ namespace Urlister
             this.urlisterSettings.Line = (int)this.intervalNumericUpDown.Value;
 
             // URLs
-            this.urlisterSettings.Urls = this.urlListtextBox.Text;
+            this.urlisterSettings.Urls = this.urlListtextBox.Lines;
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace Urlister
             this.intervalNumericUpDown.Value = this.urlisterSettings.Line;
 
             // URLs
-            this.urlListtextBox.Text = this.urlisterSettings.Urls;
+            this.urlListtextBox.Lines = this.urlisterSettings.Urls;
         }
 
         /// <summary>

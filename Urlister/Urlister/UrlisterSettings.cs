@@ -50,6 +50,6 @@ namespace Urlister
         /// Gets or sets the urls.
         /// </summary>
         /// <value>The urls.</value>
-        public string Urls { get; set; } = string.Empty;
+        public string[] Urls { get; set; }
     }
 }
