@@ -479,7 +479,7 @@ namespace Urlister
         	this.intervalNumericUpDown.Dock = System.Windows.Forms.DockStyle.Fill;
         	this.intervalNumericUpDown.Location = new System.Drawing.Point(145, 28);
         	this.intervalNumericUpDown.Maximum = new decimal(new int[] {
-        	        	        	1440,
+        	        	        	1,
         	        	        	0,
         	        	        	0,
         	        	        	0});

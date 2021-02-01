@@ -201,7 +201,7 @@ namespace Urlister
             var aboutForm = new AboutForm(
                 $"About {programTitle}",
                 $"{programTitle} {version.Major}.{version.Minor}.{version.Build}",
-                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #1, Week #1 @ Janury 01, 2021",
+                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #32, Week #05 @ February 01, 2021",
                 licenseText,
                 this.Icon.ToBitmap())
             {
@@ -236,7 +236,7 @@ namespace Urlister
         private void OnBackButtonClick(object sender, EventArgs e)
         {
             // Take one from line number
-            if (this.intervalNumericUpDown.Value > 0)
+            if (this.intervalNumericUpDown.Value > 1)
             {
                 this.intervalNumericUpDown.Value -= 1;
 
@@ -309,6 +309,9 @@ namespace Urlister
         {
             // Update line count
             this.lineCounToolStripStatusLabel.Text = this.urlListtextBox.Lines.Length.ToString();
+
+            // Bound numeric up down. Respect 1 minimum value.
+            this.intervalNumericUpDown.Maximum = this.urlListtextBox.Lines.Length == 0 ? 1 : this.urlListtextBox.Lines.Length;
         }
 
         /// <summary>
