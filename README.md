@@ -28,11 +28,11 @@ v0.2.0:
 
 Day #32, Week #05 @ February 01, 2021
 
-v0.1.0 ():
+v0.1.0:
 - Add URL list browsing.
 - N.A.N.Y. 2021 release.
 
-Day #001, Week #53 @ January 01, 2021
+Day #01, Week #01 @ January 01, 2021
 
 ==========
 
