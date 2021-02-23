@@ -353,8 +353,9 @@ namespace Urlister
                 {
                     // Default
                     case "Default":
-                        this.process.StartInfo.FileName = this.defaultBrowserPath;
-                        this.process.StartInfo.Arguments = urlLine;
+                        //this.process.StartInfo.FileName = this.defaultBrowserPath;
+                        this.process.StartInfo.FileName = urlLine;
+                        //this.process.StartInfo.Arguments = urlLine;
                         break;
 
                     // Launch Edge
@@ -364,16 +365,22 @@ namespace Urlister
 
                     // TODO Other specific browsers matching name
                     default:
-                        this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
-                        this.process.StartInfo.Arguments = urlLine;
+                        /*this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
+                        this.process.StartInfo.Arguments = urlLine;*/
                         break;
                 }
 
                 // Start process
                 this.process.Start();
 
+                // Wait for GUI to load
+                this.process.WaitForInputIdle();
+
                 // Set process name
-                this.processName = process.ProcessName;
+                this.processName = this.process.ProcessName;
+
+                //#
+                MessageBox.Show(this.processName);
 
             }
             catch (Exception ex)
@@ -715,6 +722,27 @@ namespace Urlister
                 // Advise user
                 MessageBox.Show($"Error saving settings file.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{exception.Message}", "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Handles the URL listtext box drag drop event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnUrlListtextBoxDragDrop(object sender, DragEventArgs e)
+        {
+            // ToDO Add code
+        }
+
+        /// <summary>
+        /// Handles the URL listtext box drag enter event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnUrlListtextBoxDragEnter(object sender, DragEventArgs e)
+        {
+            // Set effect
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }
