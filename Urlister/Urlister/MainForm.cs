@@ -785,6 +785,27 @@ namespace Urlister
         }
 
         /// <summary>
+        /// Validates the URI.
+        /// </summary>
+        /// <returns><c>true</c>, if URI was validated, <c>false</c> otherwise.</returns>
+        /// <param name="possibleUri">Possible URI.</param>
+        private bool ValidateUri(string possibleUri)
+        {
+            // Return TryCreate result
+            return Uri.TryCreate(possibleUri, UriKind.Absolute, out var uri) &&
+                            (uri.Scheme == Uri.UriSchemeHttps ||
+                            uri.Scheme == Uri.UriSchemeHttp ||
+                            uri.Scheme == Uri.UriSchemeFtp ||
+                            uri.Scheme == Uri.UriSchemeMailto ||
+                            uri.Scheme == Uri.UriSchemeFile ||
+                            uri.Scheme == Uri.UriSchemeNews ||
+                            uri.Scheme == Uri.UriSchemeNntp ||
+                            uri.Scheme == Uri.UriSchemeGopher ||
+                            uri.Scheme == Uri.UriSchemeNetTcp ||
+                            uri.Scheme == Uri.UriSchemeNetPipe);
+        }
+
+        /// <summary>
         /// Handles the URL listtext box drag enter event.
         /// </summary>
         /// <param name="sender">Sender object.</param>
