@@ -747,31 +747,8 @@ namespace Urlister
                     }
                     else
                     {
-                        // Set document
-                        HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
-
-                        // Load current dropped file
-                        htmlDocument.Load(droppedFile);
-
-                        // Set string builder
-                        StringBuilder linkLines = new StringBuilder();
-
-                        // Extract links
-                        foreach (HtmlNode link in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
-                        {
-                            // Set attribute
-                            HtmlAttribute htmlAttribute = link.Attributes["href"];
-
-                            // Check
-                            if (htmlAttribute.Value.Contains("a"))
-                            {
-                                // Add to text box
-                                linkLines.AppendLine(htmlAttribute.Value); ;
-                            }
-                        }
-
                         // Append link lines
-                        this.urlListtextBox.Text += linkLines.ToString();
+                        this.urlListtextBox.Text += this.ProcessHtmlFile(droppedFile);
                     }
                 }
             }
@@ -821,6 +798,40 @@ namespace Urlister
                 {
                     // Append valid URI line
                     linkLines.AppendLine(line);
+                }
+            }
+
+            // Return processed links
+            return linkLines.ToString();
+        }
+
+        /// <summary>
+        /// Processes the html file.
+        /// </summary>
+        /// <returns>The html file.</returns>
+        /// <param name="filePath">File path.</param>
+        private string ProcessHtmlFile(string filePath)
+        {
+            // Set document
+            HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
+
+            // Load current dropped file
+            htmlDocument.Load(filePath);
+
+            // Set string builder
+            StringBuilder linkLines = new StringBuilder();
+
+            // Extract links
+            foreach (HtmlNode link in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                // Set attribute
+                HtmlAttribute htmlAttribute = link.Attributes["href"];
+
+                // Check
+                if (htmlAttribute.Value.Contains("a") && this.ValidateUri(htmlAttribute.Value))
+                {
+                    // Add to text box
+                    linkLines.AppendLine(htmlAttribute.Value); ;
                 }
             }
 
