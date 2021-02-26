@@ -2,10 +2,6 @@
 //     CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication
 //     https://creativecommons.org/publicdomain/zero/1.0/legalcode
 // </copyright>
-using System.Threading;
-using System.Globalization;
-using System.Text;
-
 namespace Urlister
 {
     // Directives
@@ -14,8 +10,8 @@ namespace Urlister
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
+    using System.Text;
     using System.Windows.Forms;
     using System.Xml.Serialization;
     using HtmlAgilityPack;
@@ -63,7 +59,7 @@ namespace Urlister
         public MainForm()
         {
             // The InitializeComponent() call is required for Windows Forms designer support.
-            InitializeComponent();
+            this.InitializeComponent();
 
             /* Set associated icon */
 
@@ -208,7 +204,6 @@ namespace Urlister
                 licenseText,
                 this.Icon.ToBitmap())
             {
-
                 // Set about form icon
                 Icon = this.associatedIcon
             };
@@ -268,7 +263,7 @@ namespace Urlister
             this.SelectLine((int)this.intervalNumericUpDown.Value - 1);
 
             // Open in browser
-            OpenUrl(urlLine);
+            this.OpenUrl(urlLine);
         }
 
         /// <summary>
@@ -320,7 +315,7 @@ namespace Urlister
         /// <summary>
         /// Opens the URL.
         /// </summary>
-        /// <param name="url">URL.</param>
+        /// <param name="url">URL string.</param>
         private void OpenUrl(string url)
         {
             // Set browser
@@ -356,20 +351,20 @@ namespace Urlister
                 {
                     // Default
                     case "Default":
-                        //this.process.StartInfo.FileName = this.defaultBrowserPath;
                         this.process.StartInfo.FileName = urlLine;
-                        //this.process.StartInfo.Arguments = urlLine;
+
                         break;
 
                     // Launch Edge
                     case "Edge":
                         this.process.StartInfo.FileName = $"microsoft-edge:{urlLine}";
+
                         break;
 
                     // TODO Other specific browsers matching name
                     default:
-                        /*this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
-                        this.process.StartInfo.Arguments = urlLine;*/
+                        /* this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
+                        this.process.StartInfo.Arguments = urlLine; */
                         break;
                 }
 
@@ -381,10 +376,6 @@ namespace Urlister
 
                 // Set process name
                 this.processName = this.process.ProcessName;
-
-                //#
-                MessageBox.Show(this.processName);
-
             }
             catch (Exception ex)
             {
@@ -434,12 +425,11 @@ namespace Urlister
                 if (registryKey != null)
                 {
                     // Set default browser path withi no quotes and no parameters
-                    defaultBrowserPathCleaned = registryKey.GetValue(null).ToString().Replace("\"", "").Split(new string[] { "exe" }, 21, StringSplitOptions.RemoveEmptyEntries)[0] + "exe";
+                    defaultBrowserPathCleaned = registryKey.GetValue(null).ToString().Replace("\"", string.Empty).Split(new string[] { "exe" }, 21, StringSplitOptions.RemoveEmptyEntries)[0] + "exe";
 
-                    //Close registry key
+                    // Close registry key
                     registryKey.Close();
                 }
-
             }
             catch
             {
@@ -447,7 +437,7 @@ namespace Urlister
                 return string.Empty;
             }
 
-            //Return default browsers path
+            // Return default browsers path
             return defaultBrowserPathCleaned;
         }
 
@@ -458,11 +448,11 @@ namespace Urlister
         private void SelectLine(int lineNumber)
         {
             // Select line by number
-            string SelectedText = this.urlListtextBox.Lines[lineNumber];
-            int SelectedTextPos = this.urlListtextBox.Text.IndexOf(SelectedText, StringComparison.InvariantCulture);
-            int SelectedTextLen = SelectedText.Length;
+            string selectedText = this.urlListtextBox.Lines[lineNumber];
+            int selectedTextPos = this.urlListtextBox.Text.IndexOf(selectedText, StringComparison.InvariantCulture);
+            int selectedTextLen = selectedText.Length;
             this.urlListtextBox.Focus();
-            this.urlListtextBox.Select(SelectedTextPos, SelectedTextLen);
+            this.urlListtextBox.Select(selectedTextPos, selectedTextLen);
             this.urlListtextBox.ScrollToCaret();
         }
 
@@ -831,7 +821,7 @@ namespace Urlister
                 if (htmlAttribute.Value.Contains("a") && this.ValidateUri(htmlAttribute.Value))
                 {
                     // Add to text box
-                    linkLines.AppendLine(htmlAttribute.Value); ;
+                    linkLines.AppendLine(htmlAttribute.Value);
                 }
             }
 
@@ -848,6 +838,26 @@ namespace Urlister
         {
             // Set effect
             e.Effect = DragDropEffects.Copy;
+        }
+
+        /// <summary>
+        /// Handles the browser combo box key press event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnBrowserComboBoxKeyPress(object sender, KeyPressEventArgs e)
+        {
+            // TOD Add code
+        }
+
+        /// <summary>
+        /// Handles the browser combo box selected index changed event.
+        /// </summary>
+        /// <param name="sender">Sender object.</param>
+        /// <param name="e">Event arguments.</param>
+        private void OnBrowserComboBoxSelectedIndexChanged(object sender, EventArgs e)
+        {
+            // TOD Add code
         }
     }
 }
