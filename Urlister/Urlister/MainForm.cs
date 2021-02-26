@@ -742,10 +742,8 @@ namespace Urlister
                     // Check for .txt
                     if (droppedFile.EndsWith(".txt", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        // TODO links
-
-                        // Append contents
-                        this.urlListtextBox.Text += File.ReadAllText(droppedFile);
+                        // Append valid link lines
+                        this.urlListtextBox.Text += this.ProcessTextFile(droppedFile);
                     }
                     else
                     {
@@ -818,11 +816,11 @@ namespace Urlister
             // Iterate lines
             foreach (string line in File.ReadAllLines(filePath))
             {
-                // Validate current line 
-                if (this.ValidateUri(line))
+                // Validate current line
+                if (this.ValidateUri(line.Trim()))
                 {
                     // Append valid URI line
-                    linkLines.Append(line);
+                    linkLines.AppendLine(line);
                 }
             }
 
