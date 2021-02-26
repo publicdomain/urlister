@@ -4,6 +4,7 @@
 // </copyright>
 using System.Threading;
 using System.Globalization;
+using System.Text;
 
 namespace Urlister
 {
@@ -13,9 +14,11 @@ namespace Urlister
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Windows.Forms;
     using System.Xml.Serialization;
+    using HtmlAgilityPack;
     using Microsoft.Win32;
 
     /// <summary>
@@ -731,7 +734,54 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnUrlListtextBoxDragDrop(object sender, DragEventArgs e)
         {
-            // ToDO Add code
+            try
+            {
+                // Iterate dropped files
+                foreach (string droppedFile in new List<string>((IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop)))
+                {
+                    // Check for .txt
+                    if (droppedFile.EndsWith(".txt", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // Validate links
+
+                        // Append contents
+                        this.urlListtextBox.Text += File.ReadAllText(droppedFile);
+                    }
+                    else
+                    {
+                        // Set document
+                        HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
+
+                        // Load current dropped file
+                        htmlDocument.Load(droppedFile);
+
+                        // Set string 
+                        StringBuilder linkLines = new StringBuilder();
+
+                        // Extract links
+                        foreach (HtmlNode link in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
+                        {
+                            // Set attribute
+                            HtmlAttribute htmlAttribute = link.Attributes["href"];
+
+                            // Check
+                            if (htmlAttribute.Value.Contains("a"))
+                            {
+                                // Add to text box
+                                linkLines.AppendLine(htmlAttribute.Value); ;
+                            }
+                        }
+
+                        // Append link lines
+                        this.urlListtextBox.Text += linkLines.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Inform user
+                MessageBox.Show($"Could not finish operation:{Environment.NewLine}{ex.Message}", "Drag & Drop error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
