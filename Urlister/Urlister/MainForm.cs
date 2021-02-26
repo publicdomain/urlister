@@ -742,7 +742,7 @@ namespace Urlister
                     // Check for .txt
                     if (droppedFile.EndsWith(".txt", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        // Validate links
+                        // TODO links
 
                         // Append contents
                         this.urlListtextBox.Text += File.ReadAllText(droppedFile);
@@ -755,7 +755,7 @@ namespace Urlister
                         // Load current dropped file
                         htmlDocument.Load(droppedFile);
 
-                        // Set string 
+                        // Set string builder
                         StringBuilder linkLines = new StringBuilder();
 
                         // Extract links
@@ -803,6 +803,31 @@ namespace Urlister
                             uri.Scheme == Uri.UriSchemeGopher ||
                             uri.Scheme == Uri.UriSchemeNetTcp ||
                             uri.Scheme == Uri.UriSchemeNetPipe);
+        }
+
+        /// <summary>
+        /// Processes the text file.
+        /// </summary>
+        /// <returns>The text file.</returns>
+        /// <param name="filePath">File path.</param>
+        private string ProcessTextFile(string filePath)
+        {
+            // Set string builder
+            StringBuilder linkLines = new StringBuilder();
+
+            // Iterate lines
+            foreach (string line in File.ReadAllLines(filePath))
+            {
+                // Validate current line 
+                if (this.ValidateUri(line))
+                {
+                    // Append valid URI line
+                    linkLines.Append(line);
+                }
+            }
+
+            // Return processed links
+            return linkLines.ToString();
         }
 
         /// <summary>
