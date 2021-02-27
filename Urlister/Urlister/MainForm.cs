@@ -67,7 +67,7 @@ namespace Urlister
             this.associatedIcon = Icon.ExtractAssociatedIcon(typeof(MainForm).GetTypeInfo().Assembly.Location);
 
             // Set public domain weekly tool strip menu item image
-            this.dailyReleasesPublicDomainDailycomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
+            this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
 
             /* Configure */
 
@@ -111,7 +111,7 @@ namespace Urlister
         private void OnNewToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Clear text box
-            this.urlListtextBox.Clear();
+            this.urlListTextBox.Clear();
 
             // Reset lines
             this.intervalNumericUpDown.Value = 1;
@@ -136,7 +136,7 @@ namespace Urlister
         private void OnMoreReleasesPublicDomainGiftomToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open current website
-            Process.Start("https://publicdomaindaily.com");
+            Process.Start("https://publicdomaingift.com");
         }
 
         /// <summary>
@@ -251,13 +251,13 @@ namespace Urlister
         private void OnPlayButtonClick(object sender, EventArgs e)
         {
             // Bounds
-            if (this.intervalNumericUpDown.Value > this.urlListtextBox.Lines.Length)
+            if (this.intervalNumericUpDown.Value > this.urlListTextBox.Lines.Length)
             {
                 return;
             }
 
             // Set url line
-            string urlLine = this.urlListtextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
+            string urlLine = this.urlListTextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
 
             // Highlight target line
             this.SelectLine((int)this.intervalNumericUpDown.Value - 1);
@@ -274,7 +274,7 @@ namespace Urlister
         private void OnNextButtonClick(object sender, EventArgs e)
         {
             // Must ve within range
-            if (this.intervalNumericUpDown.Value < this.urlListtextBox.Lines.Length)
+            if (this.intervalNumericUpDown.Value < this.urlListTextBox.Lines.Length)
             {
                 // Add one to line number
                 this.intervalNumericUpDown.Value += 1;
@@ -292,7 +292,7 @@ namespace Urlister
         private void OnEndButtonClick(object sender, EventArgs e)
         {
             // Last line number
-            this.intervalNumericUpDown.Value = this.urlListtextBox.Lines.Length;
+            this.intervalNumericUpDown.Value = this.urlListTextBox.Lines.Length;
 
             // Launch
             this.playButton.PerformClick();
@@ -303,13 +303,13 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnUrlListtextBoxTextChanged(object sender, EventArgs e)
+        private void OnurlListTextBoxTextChanged(object sender, EventArgs e)
         {
             // Update line count
-            this.lineCounToolStripStatusLabel.Text = this.urlListtextBox.Lines.Length.ToString();
+            this.lineCounToolStripStatusLabel.Text = this.urlListTextBox.Lines.Length.ToString();
 
             // Bound numeric up down. Respect 1 minimum value.
-            this.intervalNumericUpDown.Maximum = this.urlListtextBox.Lines.Length == 0 ? 1 : this.urlListtextBox.Lines.Length;
+            this.intervalNumericUpDown.Maximum = this.urlListTextBox.Lines.Length == 0 ? 1 : this.urlListTextBox.Lines.Length;
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Urlister
             string browser = this.browserComboBox.SelectedItem.ToString();
 
             // Set url by line
-            string urlLine = this.urlListtextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
+            string urlLine = this.urlListTextBox.Lines[(int)this.intervalNumericUpDown.Value - 1];
 
             // TODO Check if must kill process 
             if (this.closeBrowserToolStripMenuItem.Checked && !string.IsNullOrEmpty(this.processName))
@@ -448,12 +448,12 @@ namespace Urlister
         private void SelectLine(int lineNumber)
         {
             // Select line by number
-            string selectedText = this.urlListtextBox.Lines[lineNumber];
-            int selectedTextPos = this.urlListtextBox.Text.IndexOf(selectedText, StringComparison.InvariantCulture);
+            string selectedText = this.urlListTextBox.Lines[lineNumber];
+            int selectedTextPos = this.urlListTextBox.Text.IndexOf(selectedText, StringComparison.InvariantCulture);
             int selectedTextLen = selectedText.Length;
-            this.urlListtextBox.Focus();
-            this.urlListtextBox.Select(selectedTextPos, selectedTextLen);
-            this.urlListtextBox.ScrollToCaret();
+            this.urlListTextBox.Focus();
+            this.urlListTextBox.Select(selectedTextPos, selectedTextLen);
+            this.urlListTextBox.ScrollToCaret();
         }
 
         /// <summary>
@@ -514,8 +514,15 @@ namespace Urlister
             {
                 try
                 {
+                    // Check for prev content
+                    if (this.urlListTextBox.TextLength > 0)
+                    {
+                        // Insert newline
+                        this.urlListTextBox.Text += Environment.NewLine;
+                    }
+
                     // Load from disk
-                    this.urlListtextBox.Text = File.ReadAllText(this.openFileDialog.FileName);
+                    this.urlListTextBox.Text += File.ReadAllText(this.openFileDialog.FileName);
 
                     // Set GUI
                     this.SetGuiByLoadedSettings();
@@ -550,7 +557,7 @@ namespace Urlister
                     this.UpdateSettingsByGui();
 
                     // Save URL list to file
-                    File.WriteAllText(this.saveFileDialog.FileName, this.urlListtextBox.Text);
+                    File.WriteAllText(this.saveFileDialog.FileName, this.urlListTextBox.Text);
                 }
                 catch (Exception exception)
                 {
@@ -584,7 +591,7 @@ namespace Urlister
             this.urlisterSettings.Line = (int)this.intervalNumericUpDown.Value;
 
             // URLs
-            this.urlisterSettings.Urls = this.urlListtextBox.Lines;
+            this.urlisterSettings.Urls = this.urlListTextBox.Lines;
         }
 
         /// <summary>
@@ -605,7 +612,7 @@ namespace Urlister
             this.intervalNumericUpDown.Value = this.urlisterSettings.Line;
 
             // URLs
-            this.urlListtextBox.Lines = this.urlisterSettings.Urls;
+            this.urlListTextBox.Lines = this.urlisterSettings.Urls;
         }
 
         /// <summary>
@@ -616,13 +623,13 @@ namespace Urlister
         private void OnCutToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Check length
-            if (this.urlListtextBox.TextLength > 0)
+            if (this.urlListTextBox.TextLength > 0)
             {
                 // Copy to clipboard
-                Clipboard.SetText(this.urlListtextBox.Text);
+                Clipboard.SetText(this.urlListTextBox.Text);
 
                 // Clear text box
-                this.urlListtextBox.Clear();
+                this.urlListTextBox.Clear();
             }
         }
 
@@ -634,10 +641,10 @@ namespace Urlister
         private void OnCopyToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Check length
-            if (this.urlListtextBox.TextLength > 0)
+            if (this.urlListTextBox.TextLength > 0)
             {
                 // Copy to clipboard
-                Clipboard.SetText(this.urlListtextBox.Text);
+                Clipboard.SetText(this.urlListTextBox.Text);
             }
         }
 
@@ -649,7 +656,7 @@ namespace Urlister
         private void OnPasteToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Append clipboard text
-            this.urlListtextBox.Text += Clipboard.GetText();
+            this.urlListTextBox.Text += Clipboard.GetText();
         }
 
         /// <summary>
@@ -660,7 +667,7 @@ namespace Urlister
         private void OnDeleteToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Clear text box
-            this.urlListtextBox.Clear();
+            this.urlListTextBox.Clear();
         }
 
         /// <summary>
@@ -671,7 +678,7 @@ namespace Urlister
         private void OnSelectAllToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Select text box
-            this.urlListtextBox.SelectAll();
+            this.urlListTextBox.SelectAll();
         }
 
         /// <summary>
@@ -722,25 +729,58 @@ namespace Urlister
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnUrlListtextBoxDragDrop(object sender, DragEventArgs e)
+        private void OnurlListTextBoxDragDrop(object sender, DragEventArgs e)
         {
             try
             {
+                // Declare dropped links
+                string droppedLinks = string.Empty;
+
                 // Iterate dropped files
                 foreach (string droppedFile in new List<string>((IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop)))
                 {
-                    // Check for .txt
-                    if (droppedFile.EndsWith(".txt", StringComparison.InvariantCultureIgnoreCase))
+                    // Process extensions
+                    switch (Path.GetExtension(droppedFile).ToLowerInvariant())
                     {
-                        // Append valid link lines
-                        this.urlListtextBox.Text += this.ProcessTextFile(droppedFile);
-                    }
-                    else
-                    {
-                        // Append link lines
-                        this.urlListtextBox.Text += this.ProcessHtmlFile(droppedFile);
+                        // TEXT
+                        case ".txt":
+
+                            // Append valid link lines
+                            droppedLinks += this.ProcessTextFile(droppedFile);
+
+                            // Halt flow
+                            break;
+
+                        // HTML
+                        case ".htm":
+                        case ".html":
+
+                            // Append valid links
+                            droppedLinks += this.ProcessHtmlFile(droppedFile);
+
+                            // Halt flow
+                            break;
+
+                        // URL
+                        case ".url":
+
+                            // Append extracted link
+                            droppedLinks += this.ProcesUrlFile(droppedFile);
+
+                            // Halt flow
+                            break;
                     }
                 }
+
+                // Check for prev content
+                if (this.urlListTextBox.TextLength > 0)
+                {
+                    // Insert newline
+                    this.urlListTextBox.Text += Environment.NewLine;
+                }
+
+                // Append dropped links
+                this.urlListTextBox.Text += droppedLinks;
             }
             catch (Exception ex)
             {
@@ -830,11 +870,39 @@ namespace Urlister
         }
 
         /// <summary>
+        /// Proceses the URL file.
+        /// </summary>
+        /// <returns>The URL file.</returns>
+        /// <param name="filePath">File path.</param>
+        private string ProcesUrlFile(string filePath)
+        {
+            // Extracted link
+            var link = string.Empty;
+
+            // TODO Iterate lines [Can be done via indexOf]
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                // Check for "URL="
+                if (line.StartsWith("URL=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // Extract link
+                    link = line.Split(new char[] { '=' })[1];
+
+                    // Halt flow
+                    break;
+                }
+            }
+
+            // Return extracted link
+            return link;
+        }
+
+        /// <summary>
         /// Handles the URL listtext box drag enter event.
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnUrlListtextBoxDragEnter(object sender, DragEventArgs e)
+        private void OnurlListTextBoxDragEnter(object sender, DragEventArgs e)
         {
             // Set effect
             e.Effect = DragDropEffects.Copy;
@@ -847,7 +915,7 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnBrowserComboBoxKeyPress(object sender, KeyPressEventArgs e)
         {
-            // TOD Add code
+            // TODO Add code
         }
 
         /// <summary>
@@ -857,7 +925,7 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnBrowserComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
-            // TOD Add code
+            // TODO Add code
         }
     }
 }
