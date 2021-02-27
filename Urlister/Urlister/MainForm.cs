@@ -514,15 +514,8 @@ namespace Urlister
             {
                 try
                 {
-                    // Check for prev content
-                    if (this.urlListTextBox.TextLength > 0)
-                    {
-                        // Insert newline
-                        this.urlListTextBox.Text += Environment.NewLine;
-                    }
-
-                    // Load from disk
-                    this.urlListTextBox.Text += File.ReadAllText(this.openFileDialog.FileName);
+                    // Populate by opened file(s)
+                    this.PopulateByFile(new List<string>(this.openFileDialog.FileNames));
 
                     // Set GUI
                     this.SetGuiByLoadedSettings();
@@ -731,62 +724,8 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnurlListTextBoxDragDrop(object sender, DragEventArgs e)
         {
-            try
-            {
-                // Declare dropped links
-                string droppedLinks = string.Empty;
-
-                // Iterate dropped files
-                foreach (string droppedFile in new List<string>((IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop)))
-                {
-                    // Process extensions
-                    switch (Path.GetExtension(droppedFile).ToLowerInvariant())
-                    {
-                        // TEXT
-                        case ".txt":
-
-                            // Append valid link lines
-                            droppedLinks += this.ProcessTextFile(droppedFile);
-
-                            // Halt flow
-                            break;
-
-                        // HTML
-                        case ".htm":
-                        case ".html":
-
-                            // Append valid links
-                            droppedLinks += this.ProcessHtmlFile(droppedFile);
-
-                            // Halt flow
-                            break;
-
-                        // URL
-                        case ".url":
-
-                            // Append extracted link
-                            droppedLinks += this.ProcesUrlFile(droppedFile);
-
-                            // Halt flow
-                            break;
-                    }
-                }
-
-                // Check for prev content
-                if (this.urlListTextBox.TextLength > 0)
-                {
-                    // Insert newline
-                    this.urlListTextBox.Text += Environment.NewLine;
-                }
-
-                // Append dropped links
-                this.urlListTextBox.Text += droppedLinks;
-            }
-            catch (Exception ex)
-            {
-                // Inform user
-                MessageBox.Show($"Could not finish operation:{Environment.NewLine}{ex.Message}", "Drag & Drop error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Populate URL list by dropped files
+            this.PopulateByFile(new List<string>((IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop)));
         }
 
         /// <summary>
@@ -808,6 +747,70 @@ namespace Urlister
                             uri.Scheme == Uri.UriSchemeGopher ||
                             uri.Scheme == Uri.UriSchemeNetTcp ||
                             uri.Scheme == Uri.UriSchemeNetPipe);
+        }
+
+        /// <summary>
+        /// Populates the URL list by file.
+        /// </summary>
+        /// <param name="filePathList">File path list.</param>
+        private void PopulateByFile(List<string> filePathList)
+        {
+            try
+            {
+                // Declare links
+                string links = string.Empty;
+
+                // Iterate dropped files
+                foreach (string droppedFile in filePathList)
+                {
+                    // Process extensions
+                    switch (Path.GetExtension(droppedFile).ToLowerInvariant())
+                    {
+                        // TEXT
+                        case ".txt":
+
+                            // Append valid link lines
+                            links += this.ProcessTextFile(droppedFile);
+
+                            // Halt flow
+                            break;
+
+                        // HTML
+                        case ".htm":
+                        case ".html":
+
+                            // Append valid links
+                            links += this.ProcessHtmlFile(droppedFile);
+
+                            // Halt flow
+                            break;
+
+                        // URL
+                        case ".url":
+
+                            // Append extracted link
+                            links += this.ProcesUrlFile(droppedFile);
+
+                            // Halt flow
+                            break;
+                    }
+                }
+
+                // Check for prev content
+                if (this.urlListTextBox.TextLength > 0)
+                {
+                    // Insert newline
+                    this.urlListTextBox.Text += Environment.NewLine;
+                }
+
+                // Append dropped links
+                this.urlListTextBox.Text += links;
+            }
+            catch (Exception ex)
+            {
+                // Inform user
+                MessageBox.Show($"Could not finish operation:{Environment.NewLine}{ex.Message}", "Populate by file(s) error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
