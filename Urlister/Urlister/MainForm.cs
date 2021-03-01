@@ -2,6 +2,7 @@
 //     CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication
 //     https://creativecommons.org/publicdomain/zero/1.0/legalcode
 // </copyright>
+using System.Linq;
 namespace Urlister
 {
     // Directives
@@ -54,6 +55,38 @@ namespace Urlister
         private string urlisterSettingsFilePath = "UrlisterSettings.txt";
 
         /// <summary>
+        /// Registers the hot key.
+        /// </summary>
+        /// <returns><c>true</c>, if hot key was registered, <c>false</c> otherwise.</returns>
+        /// <param name="hWnd">H window.</param>
+        /// <param name="id">Identifier.</param>
+        /// <param name="fsModifiers">Fs modifiers.</param>
+        /// <param name="vk">Vk.</param>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+        /// <summary>
+        /// Unregisters the hot key.
+        /// </summary>
+        /// <returns><c>true</c>, if hot key was unregistered, <c>false</c> otherwise.</returns>
+        /// <param name="hWnd">H window.</param>
+        /// <param name="id">Identifier.</param>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        /// <summary>
+        /// Key modifier.
+        /// </summary>
+        enum KeyModifier
+        {
+            None = 0,
+            Alt = 1,
+            Control = 2,
+            Shift = 4,
+            WinKey = 8
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:Urlister.MainForm"/> class.
         /// </summary>
         public MainForm()
@@ -101,6 +134,70 @@ namespace Urlister
 
             // Set top most
             this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
+
+            // Check for passed files
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                // Set file list 
+                var fileList = Environment.GetCommandLineArgs().ToList();
+
+                // Remove first item (Executable)
+                fileList.RemoveAt(0);
+
+                // files
+                this.PopulateByFile(fileList);
+            }
+
+            // Register the hot key
+            RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.F9.GetHashCode());
+            RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.F10.GetHashCode());
+            RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.F11.GetHashCode());
+            RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.F12.GetHashCode());
+        }
+
+        /// <summary>
+        /// Windows procedure.
+        /// </summary>
+        /// <param name="m">The messge.</param>
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            // Hotkey press
+            if (m.Msg == 0x0312)
+            {
+                // Act on F(x)
+                switch ((Keys)(((int)m.LParam >> 16) & 0xFFFF))
+                {
+                    // F12 = Next
+                    case Keys.F12:
+                        // Perform next button click
+                        this.nextButton.PerformClick();
+
+                        break;
+
+                    // F11 = Prev
+                    case Keys.F11:
+                        // Perform back button click
+                        this.backButton.PerformClick();
+
+                        break;
+
+                    // F10 = Last
+                    case Keys.F10:
+                        // Perform end button click
+                        this.endButton.PerformClick();
+
+                        break;
+
+                    // F9 = First
+                    case Keys.F9:
+                        // Perform end button click
+                        this.beginButton.PerformClick();
+
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -500,6 +597,13 @@ namespace Urlister
 
             // Save to disk
             this.SaveSettingsFile(this.urlisterSettingsFilePath);
+
+            // Unregister the hotkeys
+            for (int id = 0; id < 4; id++)
+            {
+                // Unregister current ID
+                UnregisterHotKey(this.Handle, id);
+            }
         }
 
         /// <summary>
