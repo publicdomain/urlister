@@ -384,9 +384,6 @@ namespace Urlister
             this.browserComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.browserComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.browserComboBox.FormattingEnabled = true;
-            this.browserComboBox.Items.AddRange(new object[] {
-                                    "Add new...",
-                                    "Default"});
             this.browserComboBox.Location = new System.Drawing.Point(3, 28);
             this.browserComboBox.Name = "browserComboBox";
             this.browserComboBox.Size = new System.Drawing.Size(136, 21);

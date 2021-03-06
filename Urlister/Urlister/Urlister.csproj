@@ -49,6 +49,10 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>Resources\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Resources\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutForm.cs" />
@@ -69,6 +73,8 @@
     <None Include="Resources\publicdomain.com_7-8-vista-xp.ico" />
     <None Include="Resources\HtmlAgilityPack.dll" />
     <None Include="Resources\LICENSE-HtmlAgilityPack" />
+    <None Include="Resources\LICENSE-newtonsoft-json.md" />
+    <None Include="Resources\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutForm.resx">

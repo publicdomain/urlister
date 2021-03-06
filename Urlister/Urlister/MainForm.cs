@@ -16,7 +16,9 @@ namespace Urlister
     using System.Windows.Forms;
     using System.Xml.Serialization;
     using HtmlAgilityPack;
+    using Microsoft.VisualBasic;
     using Microsoft.Win32;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Description of MainForm.
@@ -53,6 +55,11 @@ namespace Urlister
         /// The urlister settings file path.
         /// </summary>
         private string urlisterSettingsFilePath = "UrlisterSettings.txt";
+
+        /// <summary>
+        /// The browser dictionary.
+        /// </summary>
+        private Dictionary<string, string> browserDictionary = new Dictionary<string, string>();
 
         /// <summary>
         /// Registers the hot key.
@@ -111,13 +118,10 @@ namespace Urlister
             if (string.IsNullOrEmpty(this.defaultBrowserPath))
             {
                 // Advise user
-                MessageBox.Show("No default browser path found!");
-
-                // Remove default browser path from combo box
-                this.browserComboBox.Items.RemoveAt(0);
+                //MessageBox.Show("No default browser path found!");
             }
 
-            /* TODO Load settings [SaveSettings handling can be improved]*/
+            /* TODO Load settings [SaveSettings handling can be improved] */
 
             // Check for settings file
             if (!File.Exists(this.urlisterSettingsFilePath))
@@ -149,10 +153,11 @@ namespace Urlister
             }
 
             // Register the hot key
-            RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.F9.GetHashCode());
-            RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.F10.GetHashCode());
-            RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.F11.GetHashCode());
-            RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.F12.GetHashCode());
+            RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.A.GetHashCode());
+            RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.S.GetHashCode());
+            RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
+            RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
+            RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
         }
 
         /// <summary>
@@ -163,7 +168,7 @@ namespace Urlister
         {
             base.WndProc(ref m);
 
-            // Hotkey press
+            /*// Hotkey press
             if (m.Msg == 0x0312)
             {
                 // Act on F(x)
@@ -197,7 +202,7 @@ namespace Urlister
 
                         break;
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -436,7 +441,7 @@ namespace Urlister
                 catch (Exception ex)
                 {
                     // Advise user
-                    MessageBox.Show($"Error when cloding browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser closing error");
+                    MessageBox.Show($"Error when closing browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser closing error");
                 }
             }
 
@@ -599,7 +604,7 @@ namespace Urlister
             this.SaveSettingsFile(this.urlisterSettingsFilePath);
 
             // Unregister the hotkeys
-            for (int id = 0; id < 4; id++)
+            for (int id = 0; id < 5; id++)
             {
                 // Unregister current ID
                 UnregisterHotKey(this.Handle, id);
@@ -613,6 +618,11 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnOpenToolStripMenuItemClick(object sender, EventArgs e)
         {
+            // Prepare dialog properties 
+            this.openFileDialog.Title = "Open file(s) with URLs";
+            this.openFileDialog.Multiselect = true;
+            this.openFileDialog.Filter = "TXT Files|*.txt|HTML Files|*.htm;*.html|All files (*.*)|*.*";
+
             // Show open file dialog
             if (this.openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -646,7 +656,7 @@ namespace Urlister
         private void OnSaveToolStripMenuItemClick(object sender, EventArgs e)
         {
             // Open save file dialog
-            if (this.saveFileDialog.ShowDialog() == DialogResult.OK && this.saveFileDialog.FileName.Length > 0)
+            if (this.urlListTextBox.Text.Length > 0 && this.saveFileDialog.ShowDialog() == DialogResult.OK && this.saveFileDialog.FileName.Length > 0)
             {
                 try
                 {
@@ -679,9 +689,15 @@ namespace Urlister
             this.urlisterSettings.CloseBrowser = this.closeBrowserToolStripMenuItem.Checked;
 
             // Browser
-            if (this.browserComboBox.Text.Length > 0)
+            if (this.browserComboBox.Text.Length > 0 && this.browserComboBox.SelectedItem.ToString() != "Add new...")
             {
                 this.urlisterSettings.Browser = this.browserComboBox.SelectedItem.ToString();
+            }
+
+            // Browsers
+            if (this.browserDictionary.Count > 0)
+            {
+                this.urlisterSettings.Browsers = JsonConvert.SerializeObject(this.browserDictionary, Formatting.Indented);
             }
 
             // Line
@@ -701,6 +717,29 @@ namespace Urlister
 
             // Close browser
             this.closeBrowserToolStripMenuItem.Checked = this.urlisterSettings.CloseBrowser;
+
+            // Clear combo box
+            this.browserComboBox.Items.Clear();
+
+            // Add new & default
+            this.browserComboBox.Items.AddRange(new object[] {
+                "Add new...",
+                "Default"
+            });
+
+            // Set browsers
+            if (this.urlisterSettings.Browsers.Length > 0)
+            {
+                // Set browser dictionary
+                this.browserDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(this.urlisterSettings.Browsers);
+
+                // Add saved browsers
+                foreach (var browser in this.browserDictionary)
+                {
+                    // Add to combo box
+                    this.browserComboBox.Items.Add(browser.Key);
+                }
+            }
 
             // Browser
             this.browserComboBox.SelectedItem = this.urlisterSettings.Browser;
@@ -1032,7 +1071,48 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnBrowserComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
-            // TODO Add code
+            // Check if add new is selected
+            if (this.browserComboBox.GetItemText(this.browserComboBox.SelectedItem) == "Add new...")
+            {
+                // Prepare dialog properties 
+                this.openFileDialog.Title = "Choose browser executable";
+                this.openFileDialog.Multiselect = false;
+                this.openFileDialog.Filter = "EXE Files (*.exe)|*.exe|All files (*.*)|*.*";
+
+                // Show open file dialog
+                if (this.openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Allow user to set the display name
+                        string browserName = Interaction.InputBox("Set new browser display name:", "Browser name", Path.GetFileNameWithoutExtension(this.openFileDialog.SafeFileName));
+
+                        // Check there is a name
+                        if (browserName.Length > 0)
+                        {
+                            // Check for a previous dictionary entry
+                            if (this.browserDictionary.ContainsKey(browserName))
+                            {
+                                // Update browser
+                                this.browserDictionary[browserName] = this.openFileDialog.FileName;
+                            }
+                            else
+                            {
+                                // Add new browser
+                                this.browserDictionary.Add(browserName, this.openFileDialog.FileName);
+                            }
+                        }
+
+                        // Add to combo box
+                        this.browserComboBox.Items.Add(browserName);
+                    }
+                    catch (Exception exception)
+                    {
+                        // Inform user
+                        MessageBox.Show($"Error when opening \"{Path.GetFileName(this.openFileDialog.FileName)}\":{Environment.NewLine}{exception.Message}", "Open file error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
     }
 }

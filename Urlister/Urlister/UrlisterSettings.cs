@@ -8,6 +8,7 @@ namespace Urlister
 {
     // Directives
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Urlister settings.
@@ -39,6 +40,12 @@ namespace Urlister
         /// </summary>
         /// <value>The browser.</value>
         public string Browser { get; set; } = "Default";
+
+        /// <summary>
+        /// Gets or sets the browsers.
+        /// </summary>
+        /// <value>The browsers.</value>
+        public string Browsers { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the line.
