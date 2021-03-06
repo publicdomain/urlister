@@ -390,8 +390,8 @@ namespace Urlister
             this.browserComboBox.Sorted = true;
             this.browserComboBox.TabIndex = 2;
             this.browserComboBox.SelectedIndexChanged += new System.EventHandler(this.OnBrowserComboBoxSelectedIndexChanged);
-            this.browserComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnBrowserComboBoxKeyPress);
-            // 
+            this.browserComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnBrowserComboBoxKeyDown);
+            //
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 5;

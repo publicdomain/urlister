@@ -464,11 +464,11 @@ namespace Urlister
 
                         break;
 
-                    // Launch Edge
+                    /*// Launch Edge
                     case "Edge":
                         this.process.StartInfo.FileName = $"microsoft-edge:{urlLine}";
 
-                        break;
+                        break;*/
 
                     // TODO Other specific browsers matching name
                     default:
@@ -482,6 +482,9 @@ namespace Urlister
 
                 // Wait for GUI to load
                 this.process.WaitForInputIdle();
+
+                //#
+                MessageBox.Show(this.process.Id.ToString());
 
                 // Set process name
                 this.processName = this.process.ProcessName;
@@ -705,6 +708,11 @@ namespace Urlister
             if (this.browserDictionary.Count > 0)
             {
                 this.urlisterSettings.Browsers = JsonConvert.SerializeObject(this.browserDictionary, Formatting.Indented);
+            }
+            else
+            {
+                // Clear browsers
+                this.urlisterSettings.Browsers = string.Empty;
             }
 
             // Line
@@ -1062,13 +1070,47 @@ namespace Urlister
         }
 
         /// <summary>
-        /// Handles the browser combo box key press event.
+        /// Handles the browser combo box key down event.
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
-        private void OnBrowserComboBoxKeyPress(object sender, KeyPressEventArgs e)
+        private void OnBrowserComboBoxKeyDown(object sender, KeyEventArgs e)
         {
-            // TODO Add code
+            // Check for DELETE key
+            if (e.KeyCode == Keys.Delete)
+            {
+
+                // Set item text
+                string itemText = this.browserComboBox.GetItemText(this.browserComboBox.SelectedItem);
+
+                // Ensure only custom browsers are processed and user confirms
+                if (itemText == "Add new..." || itemText == "Default" || MessageBox.Show($"Would you like to remove \"{itemText}\"?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                {
+                    // Halt flow
+                    return;
+                }
+
+                // Prevent GUI updates
+                this.browserComboBox.BeginUpdate();
+
+                // Remove from browser dictionary
+                this.browserDictionary.Remove(itemText);
+
+                // Remove browser item
+                this.browserComboBox.Items.RemoveAt(this.browserComboBox.SelectedIndex);
+
+                // Set combo box to default
+                this.browserComboBox.SelectedIndex = 1;
+
+                // Update settings
+                this.UpdateSettingsByGui();
+
+                // TODO Save settings to disk [Check if it's more convenient to simply let FormClosing take care of it]
+                this.SaveSettingsFile(this.urlisterSettingsFilePath);
+
+                // ResumeGUI updates
+                this.browserComboBox.EndUpdate();
+            }
         }
 
         /// <summary>
