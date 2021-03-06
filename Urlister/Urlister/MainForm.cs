@@ -168,41 +168,48 @@ namespace Urlister
         {
             base.WndProc(ref m);
 
-            /*// Hotkey press
+            // Hotkey press
             if (m.Msg == 0x0312)
             {
-                // Act on F(x)
+                // Act on SHIFT + <key>
                 switch ((Keys)(((int)m.LParam >> 16) & 0xFFFF))
                 {
-                    // F12 = Next
-                    case Keys.F12:
-                        // Perform next button click
-                        this.nextButton.PerformClick();
-
-                        break;
-
-                    // F11 = Prev
-                    case Keys.F11:
+                    // A = Prev
+                    case Keys.A:
                         // Perform back button click
                         this.backButton.PerformClick();
 
                         break;
 
-                    // F10 = Last
-                    case Keys.F10:
-                        // Perform end button click
-                        this.endButton.PerformClick();
+                    // S = Next
+                    case Keys.S:
+                        // Perform next button click
+                        this.nextButton.PerformClick();
 
                         break;
 
-                    // F9 = First
-                    case Keys.F9:
+                    // D = Play
+                    case Keys.D:
+                        // Perform play button click
+                        this.playButton.PerformClick();
+
+                        break;
+
+                    // Q = First
+                    case Keys.Q:
                         // Perform end button click
                         this.beginButton.PerformClick();
 
                         break;
+
+                    // W = Last
+                    case Keys.W:
+                        // Perform end button click
+                        this.endButton.PerformClick();
+
+                        break;
                 }
-            }*/
+            }
         }
 
         /// <summary>
