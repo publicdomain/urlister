@@ -111,15 +111,15 @@ namespace Urlister
 
             /* Configure */
 
-            // Set default browser path
+            /*// Set default browser path
             this.defaultBrowserPath = this.GetDefaultBrowserPath();
 
             // Check if set
             if (string.IsNullOrEmpty(this.defaultBrowserPath))
             {
                 // Advise user
-                //MessageBox.Show("No default browser path found!");
-            }
+                MessageBox.Show("No default browser path found!");
+            }*/
 
             /* TODO Load settings [SaveSettings handling can be improved] */
 
@@ -238,7 +238,7 @@ namespace Urlister
         }
 
         /// <summary>
-        /// Handles the weekly releases public domain weeklycom tool strip menu item click event.
+        /// Handles the more releases public domain giftom tool strip menu item click event.
         /// </summary>
         /// <param name="sender">Sender object.</param>
         /// <param name="e">Event arguments.</param>
@@ -309,7 +309,7 @@ namespace Urlister
             var aboutForm = new AboutForm(
                 $"About {programTitle}",
                 $"{programTitle} {version.Major}.{version.Minor}.{version.Build}",
-                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #32, Week #05 @ February 01, 2021",
+                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #66, Week #09 @ March 07, 2021",
                 licenseText,
                 this.Icon.ToBitmap())
             {
