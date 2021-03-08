@@ -32,11 +32,6 @@ namespace Urlister
         private Icon associatedIcon = null;
 
         /// <summary>
-        /// The process.
-        /// </summary>
-        private Process process = new Process();
-
-        /// <summary>
         /// The name of the process.
         /// </summary>
         private string processName = string.Empty;
@@ -98,66 +93,75 @@ namespace Urlister
         /// </summary>
         public MainForm()
         {
-            // The InitializeComponent() call is required for Windows Forms designer support.
-            this.InitializeComponent();
+            try
+            {
+                // The InitializeComponent() call is required for Windows Forms designer support.
+                this.InitializeComponent();
 
-            /* Set associated icon */
+                /* Set associated icon */
 
-            // Set associated icon from exe file
-            this.associatedIcon = Icon.ExtractAssociatedIcon(typeof(MainForm).GetTypeInfo().Assembly.Location);
+                // Set associated icon from exe file
+                this.associatedIcon = Icon.ExtractAssociatedIcon(typeof(MainForm).GetTypeInfo().Assembly.Location);
 
-            // Set public domain weekly tool strip menu item image
-            this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
+                // Set public domain weekly tool strip menu item image
+                this.moreReleasesPublicDomainGiftcomToolStripMenuItem.Image = this.associatedIcon.ToBitmap();
 
-            /* Configure */
+                /* Configure */
 
-            /*// Set default browser path
-            this.defaultBrowserPath = this.GetDefaultBrowserPath();
+                // Set default browser path
+                this.defaultBrowserPath = this.GetDefaultBrowserPath();
 
-            // Check if set
-            if (string.IsNullOrEmpty(this.defaultBrowserPath))
+                // Check if set AND it's the first run
+                if (string.IsNullOrEmpty(this.defaultBrowserPath) && !File.Exists(this.urlisterSettingsFilePath))
+                {
+                    // Advise user
+                    MessageBox.Show($"No default browser path found!{Environment.NewLine}Please add new browser manually.", "Default browser detection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                /* TODO Load settings [SaveSettings handling can be improved] */
+
+                // Check for settings file
+                if (!File.Exists(this.urlisterSettingsFilePath))
+                {
+                    // Create new settings file
+                    this.SaveSettingsFile(this.urlisterSettingsFilePath);
+                }
+
+                // Load settings from disk
+                this.urlisterSettings = this.LoadSettingsFile(this.urlisterSettingsFilePath);
+
+                // Set GUI
+                this.SetGuiByLoadedSettings();
+
+                // Set top most
+                this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
+
+                // Check for passed files
+                if (Environment.GetCommandLineArgs().Length > 1)
+                {
+                    // Set file list 
+                    var fileList = Environment.GetCommandLineArgs().ToList();
+
+                    // Remove first item (Executable)
+                    fileList.RemoveAt(0);
+
+                    // files
+                    this.PopulateByFile(fileList);
+                }
+
+                // Register the hot key
+                RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.A.GetHashCode());
+                RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.S.GetHashCode());
+                RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
+                RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
+                RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
+
+            }
+            catch (Exception ex)
             {
                 // Advise user
-                MessageBox.Show("No default browser path found!");
-            }*/
-
-            /* TODO Load settings [SaveSettings handling can be improved] */
-
-            // Check for settings file
-            if (!File.Exists(this.urlisterSettingsFilePath))
-            {
-                // Create new settings file
-                this.SaveSettingsFile(this.urlisterSettingsFilePath);
+                MessageBox.Show($"Error when initializing the program.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Initialization error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            // Load settings from disk
-            this.urlisterSettings = this.LoadSettingsFile(this.urlisterSettingsFilePath);
-
-            // Set GUI
-            this.SetGuiByLoadedSettings();
-
-            // Set top most
-            this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
-
-            // Check for passed files
-            if (Environment.GetCommandLineArgs().Length > 1)
-            {
-                // Set file list 
-                var fileList = Environment.GetCommandLineArgs().ToList();
-
-                // Remove first item (Executable)
-                fileList.RemoveAt(0);
-
-                // files
-                this.PopulateByFile(fileList);
-            }
-
-            // Register the hot key
-            RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.A.GetHashCode());
-            RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.S.GetHashCode());
-            RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
-            RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
-            RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
         }
 
         /// <summary>
@@ -328,6 +332,12 @@ namespace Urlister
         /// <param name="e">Event arguments.</param>
         private void OnBeginButtonClick(object sender, EventArgs e)
         {
+            // Bounds
+            if (this.urlListTextBox.Lines.Length > 0)
+            {
+                return;
+            }
+
             // First line number
             this.intervalNumericUpDown.Value = 1;
 
@@ -422,6 +432,87 @@ namespace Urlister
         }
 
         /// <summary>
+        /// Gets the default browser path.
+        /// </summary>
+        /// <returns>The default browser path.</returns>
+        private string GetDefaultBrowserPath()
+        {
+            // Declare default browser path variable
+            string defaultBrowserPathCleaned = string.Empty;
+
+            //# TODO this whole block can be improved... [i.e. better default browser detection]
+            try
+            {
+                // Declare registry key
+                RegistryKey registryKey = null;
+
+                // Set registry key
+                for (int i = 0; i < 3; i++)
+                {
+                    // Empty cleaned path variable 
+                    defaultBrowserPathCleaned = string.Empty;
+
+                    switch (i)
+                    {
+                        case 0:
+                            try
+                            {
+                                var userChoice = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice", false);
+                                var progId = userChoice.GetValue("ProgId");
+                                registryKey = Registry.ClassesRoot.OpenSubKey(progId + @"\shell\open\command", false);
+                            }
+                            catch
+                            {
+                                // Next iteration
+                                continue;
+                            }
+                            break;
+                        case 1:
+                            try
+                            {
+                                registryKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http", false);
+                            }
+                            catch
+                            {
+                                // Next iteration
+                                continue;
+                            }
+                            break; ;
+                        case 2:
+                            try
+                            {
+                                registryKey = Registry.ClassesRoot.OpenSubKey(@"HTTP\shell\open\command", false);
+                            }
+                            catch
+                            {
+                                // Exit switch
+                                break;
+                            }
+                            break;
+                    }
+
+                    // Check there's something to work with
+                    if (registryKey != null)
+                    {
+                        // Set default browser path withi no quotes and no parameters
+                        defaultBrowserPathCleaned = registryKey.GetValue(null).ToString().Replace("\"", string.Empty).Split(new string[] { "exe" }, 2, StringSplitOptions.RemoveEmptyEntries)[0] + "exe";
+
+                        // Close registry key
+                        registryKey.Close();
+                    }
+                }
+            }
+            catch
+            {
+                // On error, empty string
+                return string.Empty;
+            }
+
+            // Return default browsers path
+            return defaultBrowserPathCleaned;
+        }
+
+        /// <summary>
         /// Opens the URL.
         /// </summary>
         /// <param name="url">URL string.</param>
@@ -444,23 +535,32 @@ namespace Urlister
                         // Close gracefully
                         browserProcess.CloseMainWindow();
                     }
+
+                    // Empty process nme
+                    this.processName = string.Empty;
+
                 }
                 catch (Exception ex)
                 {
                     // Advise user
-                    MessageBox.Show($"Error when closing browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser closing error");
+                    MessageBox.Show($"Error when closing the browser.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Browser closing error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
             // Error handling
             try
             {
+                // Set new process 
+                Process process = new Process();
+
                 // Act on browser
                 switch (browser)
                 {
                     // Default
                     case "Default":
-                        this.process.StartInfo.FileName = urlLine;
+
+                        // Set file name 
+                        process.StartInfo.FileName = this.defaultBrowserPath;
 
                         break;
 
@@ -470,87 +570,32 @@ namespace Urlister
 
                         break;*/
 
-                    // TODO Other specific browsers matching name
+                    // Custom browsers
                     default:
-                        /* this.process.StartInfo.FileName = $"{browser.ToLower()}.exe";
-                        this.process.StartInfo.Arguments = urlLine; */
+
+                        // Set file name
+                        process.StartInfo.FileName = this.browserDictionary[browser];
+
                         break;
                 }
 
+                // Set target URL
+                process.StartInfo.Arguments = urlLine;
+
                 // Start process
-                this.process.Start();
+                process.Start();
 
                 // Wait for GUI to load
-                this.process.WaitForInputIdle();
-
-                //#
-                MessageBox.Show(this.process.Id.ToString());
+                process.WaitForInputIdle();
 
                 // Set process name
-                this.processName = this.process.ProcessName;
+                this.processName = process.ProcessName;
             }
             catch (Exception ex)
             {
                 // Advise user
-                MessageBox.Show($"Error when launching browser. Message:{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Browser error");
+                MessageBox.Show($"Error when launching browser.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Browser error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// Gets the default browser path.
-        /// </summary>
-        /// <returns>The default browser path.</returns>
-        private string GetDefaultBrowserPath()
-        {
-            // Declare default browser path variable
-            string defaultBrowserPathCleaned = string.Empty;
-
-            try
-            {
-                // Declare registry key
-                RegistryKey registryKey = null;
-
-                // Set registry key
-                for (int i = 0; i < 3; i++)
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            registryKey = Registry.ClassesRoot.OpenSubKey(@"HTTP\shell\open\command", false);
-                            break;
-                        case 1:
-                            registryKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http", false);
-                            break;
-                        case 2:
-                            registryKey = Registry.ClassesRoot.OpenSubKey(Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice", false).GetValue("ProgId") + @"\shell\open\command", false);
-                            break;
-                    }
-
-                    if (registryKey != null)
-                    {
-                        // Exit for
-                        break;
-                    }
-                }
-
-                // Check there's something to work with
-                if (registryKey != null)
-                {
-                    // Set default browser path withi no quotes and no parameters
-                    defaultBrowserPathCleaned = registryKey.GetValue(null).ToString().Replace("\"", string.Empty).Split(new string[] { "exe" }, 21, StringSplitOptions.RemoveEmptyEntries)[0] + "exe";
-
-                    // Close registry key
-                    registryKey.Close();
-                }
-            }
-            catch
-            {
-                // On error, empty string
-                return string.Empty;
-            }
-
-            // Return default browsers path
-            return defaultBrowserPathCleaned;
         }
 
         /// <summary>
@@ -759,11 +804,11 @@ namespace Urlister
             // Browser
             this.browserComboBox.SelectedItem = this.urlisterSettings.Browser;
 
-            // Line
-            this.intervalNumericUpDown.Value = this.urlisterSettings.Line;
-
             // URLs
             this.urlListTextBox.Lines = this.urlisterSettings.Urls;
+
+            // Line
+            this.intervalNumericUpDown.Value = this.urlisterSettings.Line;
         }
 
         /// <summary>
@@ -1161,6 +1206,9 @@ namespace Urlister
                         MessageBox.Show($"Error when opening \"{Path.GetFileName(this.openFileDialog.FileName)}\":{Environment.NewLine}{exception.Message}", "Open file error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+
+                // Set combo box to default
+                this.browserComboBox.SelectedText = "Default";
             }
         }
     }
