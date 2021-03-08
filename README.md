@@ -1,7 +1,7 @@
 # URLister
 Browse link lists, one website at a time.
 
-![Release's image](https://user-images.githubusercontent.com/54631779/106460241-66902b00-6469-11eb-9547-55cf9fe4845e.png)
+![Release's image](https://user-images.githubusercontent.com/54631779/110376761-f5283700-8029-11eb-8a7c-0889a46feee8.png)
 
 Made for **nkormanik** from [donationcoder.com](https://www.donationcoder.com).
 
