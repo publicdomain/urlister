@@ -57,38 +57,6 @@ namespace Urlister
         private Dictionary<string, string> browserDictionary = new Dictionary<string, string>();
 
         /// <summary>
-        /// Registers the hot key.
-        /// </summary>
-        /// <returns><c>true</c>, if hot key was registered, <c>false</c> otherwise.</returns>
-        /// <param name="hWnd">H window.</param>
-        /// <param name="id">Identifier.</param>
-        /// <param name="fsModifiers">Fs modifiers.</param>
-        /// <param name="vk">Vk.</param>
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
-
-        /// <summary>
-        /// Unregisters the hot key.
-        /// </summary>
-        /// <returns><c>true</c>, if hot key was unregistered, <c>false</c> otherwise.</returns>
-        /// <param name="hWnd">H window.</param>
-        /// <param name="id">Identifier.</param>
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        /// <summary>
-        /// Key modifier.
-        /// </summary>
-        enum KeyModifier
-        {
-            None = 0,
-            Alt = 1,
-            Control = 2,
-            Shift = 4,
-            WinKey = 8
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:Urlister.MainForm"/> class.
         /// </summary>
         public MainForm()
@@ -162,13 +130,44 @@ namespace Urlister
                 RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
                 RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
                 RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
-
             }
             catch (Exception ex)
             {
                 // Advise user
                 MessageBox.Show($"Error when initializing the program.{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}", "Initialization error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Registers the hot key.
+        /// </summary>
+        /// <returns><c>true</c>, if hot key was registered, <c>false</c> otherwise.</returns>
+        /// <param name="hWnd">H window.</param>
+        /// <param name="id">Identifier.</param>
+        /// <param name="fsModifiers">Fs modifiers.</param>
+        /// <param name="vk">Vk.</param>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+        /// <summary>
+        /// Unregisters the hot key.
+        /// </summary>
+        /// <returns><c>true</c>, if hot key was unregistered, <c>false</c> otherwise.</returns>
+        /// <param name="hWnd">H window.</param>
+        /// <param name="id">Identifier.</param>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        /// <summary>
+        /// Key modifier.
+        /// </summary>
+        enum KeyModifier
+        {
+            None = 0,
+            Alt = 1,
+            Control = 2,
+            Shift = 4,
+            WinKey = 8
         }
 
         /// <summary>
@@ -340,7 +339,7 @@ namespace Urlister
         private void OnBeginButtonClick(object sender, EventArgs e)
         {
             // Bounds
-            if (this.urlListTextBox.Lines.Length > 0)
+            if (this.urlListTextBox.Lines.Length < 1)
             {
                 return;
             }
