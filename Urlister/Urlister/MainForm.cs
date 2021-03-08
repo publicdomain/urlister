@@ -966,8 +966,8 @@ namespace Urlister
         {
             try
             {
-                // Declare links
-                string links = string.Empty;
+                // Declare link list
+                var linkList = new List<string>();
 
                 // Iterate dropped files
                 foreach (string droppedFile in filePathList)
@@ -978,8 +978,8 @@ namespace Urlister
                         // TEXT
                         case ".txt":
 
-                            // Append valid link lines
-                            links += this.ProcessTextFile(droppedFile);
+                            // Add valid links to list
+                            linkList.AddRange(this.ProcessTextFile(droppedFile));
 
                             // Halt flow
                             break;
@@ -988,8 +988,8 @@ namespace Urlister
                         case ".htm":
                         case ".html":
 
-                            // Append valid links
-                            links += this.ProcessHtmlFile(droppedFile);
+                            // Add valid links to list
+                            linkList.AddRange(this.ProcessHtmlFile(droppedFile));
 
                             // Halt flow
                             break;
@@ -997,8 +997,8 @@ namespace Urlister
                         // URL
                         case ".url":
 
-                            // Append extracted link
-                            links += this.ProcesUrlFile(droppedFile);
+                            // Add valid links to list
+                            linkList.AddRange(this.ProcesUrlFile(droppedFile));
 
                             // Halt flow
                             break;
@@ -1013,7 +1013,7 @@ namespace Urlister
                 }
 
                 // Append dropped links
-                this.urlListTextBox.Text += links;
+                this.urlListTextBox.Text += string.Join(Environment.NewLine, linkList);
             }
             catch (Exception ex)
             {
@@ -1025,34 +1025,40 @@ namespace Urlister
         /// <summary>
         /// Processes the text file.
         /// </summary>
-        /// <returns>The text file.</returns>
+        /// <returns>The link list.</returns>
         /// <param name="filePath">File path.</param>
-        private string ProcessTextFile(string filePath)
+        private List<string> ProcessTextFile(string filePath)
         {
-            // Set string builder
-            StringBuilder linkLines = new StringBuilder();
+            // Set link list 
+            var linkList = new List<string>();
+
+            // Declare trimmed line
+            string trimmedline = string.Empty;
 
             // Iterate lines
             foreach (string line in File.ReadAllLines(filePath))
             {
+                // Set trimmed line
+                trimmedline = line.Trim();
+
                 // Validate current line
-                if (this.ValidateUri(line.Trim()))
+                if (this.ValidateUri(trimmedline))
                 {
-                    // Append valid URI line
-                    linkLines.AppendLine(line);
+                    // Add valid URI
+                    linkList.Add(trimmedline);
                 }
             }
 
-            // Return processed links
-            return linkLines.ToString();
+            // Return valid link list
+            return linkList;
         }
 
         /// <summary>
         /// Processes the html file.
         /// </summary>
-        /// <returns>The html file.</returns>
+        /// <returns>The links list.</returns>
         /// <param name="filePath">File path.</param>
-        private string ProcessHtmlFile(string filePath)
+        private List<string> ProcessHtmlFile(string filePath)
         {
             // Set document
             HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
@@ -1060,8 +1066,8 @@ namespace Urlister
             // Load current dropped file
             htmlDocument.Load(filePath);
 
-            // Set string builder
-            StringBuilder linkLines = new StringBuilder();
+            // Set link list 
+            var linkList = new List<string>();
 
             // Extract links
             foreach (HtmlNode link in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
@@ -1072,22 +1078,25 @@ namespace Urlister
                 // Check
                 if (htmlAttribute.Value.Contains("a") && this.ValidateUri(htmlAttribute.Value))
                 {
-                    // Add to text box
-                    linkLines.AppendLine(htmlAttribute.Value);
+                    // Add to link list 
+                    linkList.Add(htmlAttribute.Value);
                 }
             }
 
-            // Return processed links
-            return linkLines.ToString();
+            // Return validlink list
+            return linkList;
         }
 
         /// <summary>
-        /// Proceses the URL file.
+        /// TODO Proceses the URL file. [May yconsider returning string. Returns list for uniformity purposes with TXT and HTML processing functions]
         /// </summary>
-        /// <returns>The URL file.</returns>
+        /// <returns>The extracted URL.</returns>
         /// <param name="filePath">File path.</param>
-        private string ProcesUrlFile(string filePath)
+        private List<string> ProcesUrlFile(string filePath)
         {
+            // Set link list 
+            var linkList = new List<string>();
+
             // Extracted link
             var link = string.Empty;
 
@@ -1100,13 +1109,16 @@ namespace Urlister
                     // Extract link
                     link = line.Split(new char[] { '=' })[1];
 
+                    // Add to link list
+                    linkList.Add(link);
+
                     // Halt flow
                     break;
                 }
             }
 
-            // Return extracted link
-            return link;
+            // Return extracted link list
+            return linkList;
         }
 
         /// <summary>
