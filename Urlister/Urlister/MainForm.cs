@@ -2,7 +2,6 @@
 //     CC0 1.0 Universal (CC0 1.0) - Public Domain Dedication
 //     https://creativecommons.org/publicdomain/zero/1.0/legalcode
 // </copyright>
-using System.Linq;
 namespace Urlister
 {
     // Directives
@@ -11,6 +10,7 @@ namespace Urlister
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Text;
     using System.Windows.Forms;
@@ -112,10 +112,17 @@ namespace Urlister
                 this.defaultBrowserPath = this.GetDefaultBrowserPath();
 
                 // Check if set AND it's the first run
-                if (string.IsNullOrEmpty(this.defaultBrowserPath) && !File.Exists(this.urlisterSettingsFilePath))
+                if (string.IsNullOrEmpty(this.defaultBrowserPath))
                 {
-                    // Advise user
-                    MessageBox.Show($"No default browser path found!{Environment.NewLine}Please add new browser manually.", "Default browser detection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Use internet explorer as fallback
+                    this.defaultBrowserPath = "iexplore.exe";
+
+                    // Check for first run
+                    if (!File.Exists(this.urlisterSettingsFilePath))
+                    {
+                        // Advise user
+                        MessageBox.Show($"No default browser path found!{Environment.NewLine}(Using \"iexplore.exe\" as a fallback){Environment.NewLine}{Environment.NewLine}Feel free to add more browsers manually.", "Default browser detection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
 
                 /* TODO Load settings [SaveSettings handling can be improved] */
