@@ -679,11 +679,11 @@ namespace Urlister
             // Process hotkeys
             if (this.enableHotkeysToolStripMenuItem.Checked)
             {
-                this.UnregisterHotkeys();
+                this.RegisterHotkeys();
             }
             else
             {
-                this.RegisterHotkeys();
+                this.UnregisterHotkeys();
             }
         }
 
