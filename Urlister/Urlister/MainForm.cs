@@ -124,12 +124,12 @@ namespace Urlister
                     this.PopulateByFile(fileList);
                 }
 
-                // Register the hot key
-                RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.A.GetHashCode());
-                RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.S.GetHashCode());
-                RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
-                RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
-                RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
+                // Check if must enable hotkeys
+                if (this.enableHotkeysToolStripMenuItem.Checked)
+                {
+                    // Register HotKeys
+                    this.RegisterHotkeys();
+                }
             }
             catch (Exception ex)
             {
@@ -150,6 +150,19 @@ namespace Urlister
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 
         /// <summary>
+        /// Registers the hotkeys.
+        /// </summary>
+        private void RegisterHotkeys()
+        {
+            // Register hotkeys
+            RegisterHotKey(this.Handle, 0, (int)KeyModifier.Shift, Keys.A.GetHashCode());
+            RegisterHotKey(this.Handle, 1, (int)KeyModifier.Shift, Keys.S.GetHashCode());
+            RegisterHotKey(this.Handle, 2, (int)KeyModifier.Shift, Keys.D.GetHashCode());
+            RegisterHotKey(this.Handle, 3, (int)KeyModifier.Shift, Keys.Q.GetHashCode());
+            RegisterHotKey(this.Handle, 4, (int)KeyModifier.Shift, Keys.W.GetHashCode());
+        }
+
+        /// <summary>
         /// Unregisters the hot key.
         /// </summary>
         /// <returns><c>true</c>, if hot key was unregistered, <c>false</c> otherwise.</returns>
@@ -157,6 +170,19 @@ namespace Urlister
         /// <param name="id">Identifier.</param>
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        /// <summary>
+        /// Unregisters the hotkeys.
+        /// </summary>
+        private void UnregisterHotkeys()
+        {
+            // Unregister hotkeys
+            for (int id = 0; id < 5; id++)
+            {
+                // Unregister current ID
+                UnregisterHotKey(this.Handle, id);
+            }
+        }
 
         /// <summary>
         /// Key modifier.
@@ -663,13 +689,6 @@ namespace Urlister
 
             // Save to disk
             this.SaveSettingsFile(this.urlisterSettingsFilePath);
-
-            // Unregister the hotkeys
-            for (int id = 0; id < 5; id++)
-            {
-                // Unregister current ID
-                UnregisterHotKey(this.Handle, id);
-            }
         }
 
         /// <summary>
@@ -766,6 +785,9 @@ namespace Urlister
                 this.urlisterSettings.Browsers = string.Empty;
             }
 
+            // Hotkeys
+            this.urlisterSettings.EnableHotkeys = this.enableHotkeysToolStripMenuItem.Checked;
+
             // Line
             this.urlisterSettings.Line = (int)this.intervalNumericUpDown.Value;
 
@@ -809,6 +831,9 @@ namespace Urlister
 
             // Browser
             this.browserComboBox.SelectedItem = this.urlisterSettings.Browser;
+
+            // Hotkeys
+            this.enableHotkeysToolStripMenuItem.Checked = this.urlisterSettings.EnableHotkeys;
 
             // URLs
             this.urlListTextBox.Lines = this.urlisterSettings.Urls;

@@ -48,6 +48,12 @@ namespace Urlister
         public string Browsers { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Urlister.UrlisterSettings"/> enable hotkeys.
+        /// </summary>
+        /// <value><c>true</c> if enable hotkeys; otherwise, <c>false</c>.</value>
+        public bool EnableHotkeys { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the line.
         /// </summary>
         /// <value>The line.</value>
