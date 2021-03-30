@@ -675,6 +675,16 @@ namespace Urlister
 
             // Set topmost by check box
             this.TopMost = this.alwaysOnTopToolStripMenuItem.Checked;
+
+            // Process hotkeys
+            if (this.enableHotkeysToolStripMenuItem.Checked)
+            {
+                this.UnregisterHotkeys();
+            }
+            else
+            {
+                this.RegisterHotkeys();
+            }
         }
 
         /// <summary>
@@ -689,6 +699,12 @@ namespace Urlister
 
             // Save to disk
             this.SaveSettingsFile(this.urlisterSettingsFilePath);
+
+            // Check if must  Unregister the hotkeys
+            if (this.enableHotkeysToolStripMenuItem.Checked)
+            {
+                this.UnregisterHotkeys();
+            }
         }
 
         /// <summary>
