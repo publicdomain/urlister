@@ -16,10 +16,9 @@ Targets Microsoft .NET framework v4.5 (Native to Windows 8+)
 Notes:
 
 v0.4.0
-- Add user-selectable hotkeys (form).
 - Add hotkey enable/disable option.
 
-Day #89, Week #13 @ March 30, 2021
+Day #90, Week #13 @ March 31, 2021
 
 v0.3.0:
 - HTML link importing.
@@ -51,6 +50,15 @@ v0.1.0:
 - N.A.N.Y. 2021 release.
 
 Day #01, Week #01 @ January 01, 2021
+
+==========
+
+## Release sponsors:
+
+* Jesse Reichler (A.K.A. Mouser from DonationCoder.com)
+* Tim Parsons
+
+Support this Public Domain project from **$1**! Check out: [https://www.patreon.com/publicdomain](www.patreon.com/publicdomain)
 
 ==========
 
