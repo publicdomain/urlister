@@ -345,7 +345,7 @@ namespace Urlister
             var aboutForm = new AboutForm(
                 $"About {programTitle}",
                 $"{programTitle} {version.Major}.{version.Minor}.{version.Build}",
-                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #67, Week #10 @ March 08, 2021",
+                $"Made for: nkormanik{Environment.NewLine}DonationCoder.com{Environment.NewLine}Day #90, Week #13 @ March 31, 2021",
                 licenseText,
                 this.Icon.ToBitmap())
             {

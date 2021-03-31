@@ -15,6 +15,12 @@ Targets Microsoft .NET framework v4.5 (Native to Windows 8+)
 
 Notes:
 
+v0.4.0
+- Add user-selectable hotkeys (form).
+- Add hotkey enable/disable option.
+
+Day #89, Week #13 @ March 30, 2021
+
 v0.3.0:
 - HTML link importing.
 - Drag & Drop support for .txt, .htm, .html and .url.
